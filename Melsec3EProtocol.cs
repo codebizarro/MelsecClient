@@ -39,9 +39,8 @@ namespace Melsec
             byte[] recvbuffer = SendBuffer(sendbuffer);
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / 4;
-            int blockLen = retLen * 4;
             float[] ret = new float[retLen];
-            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, blockLen);
+            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
             return ret;
         }
 
@@ -83,9 +82,8 @@ namespace Melsec
             byte[] recvbuffer = SendBuffer(sendbuffer);
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / 4;
-            int blockLen = retLen * 4;
             uint[] ret = new uint[retLen];
-            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, blockLen);
+            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
             return ret;
         }
 
@@ -127,9 +125,8 @@ namespace Melsec
             byte[] recvbuffer = SendBuffer(sendbuffer);
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / 2;
-            int blockLen = retLen * 2;
             ushort[] ret = new ushort[retLen];
-            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, blockLen);
+            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
             return ret;
         }
 
