@@ -1,0 +1,20 @@
+using System;
+
+namespace Melsec
+{
+    public sealed class MelsecEthClient : MelsecClient
+    {
+        public MelsecEthClient(MelsecEthProtocol protocol, int receiveTimeout, int sendTimeout)
+            : base(protocol, receiveTimeout, sendTimeout)
+        {
+        }
+
+        public MelsecEthProtocol Protocol
+        {
+            get
+            {
+                return (MelsecEthProtocol)melsecProtocol;
+            }
+        }
+    }
+}
