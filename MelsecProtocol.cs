@@ -78,6 +78,8 @@ namespace Melsec
 
         public abstract float[] ReadReal(ushort point, MelsecDeviceType DeviceType, byte count);
 
+        public abstract float[] ReadReal(ushort[] point, MelsecDeviceType DeviceType);
+
         public abstract void WriteReal(ushort point, float val, MelsecDeviceType DeviceType);
 
         public abstract uint ReadDword(ushort point, MelsecDeviceType DeviceType);

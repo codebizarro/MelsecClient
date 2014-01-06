@@ -8,6 +8,7 @@ namespace Melsec
         private const int MIN_RESPONSE_LENGTH = 10;
         private const int RETURN_VALUE_POSITION = 11;
         private const byte RETURN_PACKET_HEADER = 0xD0;
+        private const int PACKET_HEADER_LENGTH = 17;
 
         public Melsec3EProtocol(string ip, ushort port)
             : base(ip, port, ERROR_CODE_POSITION, MIN_RESPONSE_LENGTH, RETURN_VALUE_POSITION, RETURN_PACKET_HEADER)
@@ -36,6 +37,29 @@ namespace Melsec
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
 				cnt[0],cnt[1]};
+            byte[] recvbuffer = SendBuffer(sendbuffer);
+            int dataLen = recvbuffer.Length - ReturnValuePosition;
+            int retLen = dataLen / 4;
+            float[] ret = new float[retLen];
+            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
+            return ret;
+        }
+
+        public override float[] ReadReal(ushort[] point, MelsecDeviceType DeviceType)
+        {
+#warning test method
+            ushort count = (ushort)point.Length;
+            byte[] sendbuffer = new byte[PACKET_HEADER_LENGTH + count * 4];
+            byte[] len = GetPointCount((ushort)(sendbuffer.Length - ERROR_CODE_POSITION));
+            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+				0x03,0x04,0x00,0x00,0x00,(byte)count};
+            Array.Copy(buff1, sendbuffer, buff1.Length);
+            for (int i = 0; i < count; ++i)
+            {
+                byte[] addr = GetPointBytes(point[i]);
+                byte[] buff2 = new byte[]{addr[0],addr[1],addr[2],(byte)DeviceType};
+                Array.Copy(new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType }, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
+            }
             byte[] recvbuffer = SendBuffer(sendbuffer);
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / 4;
