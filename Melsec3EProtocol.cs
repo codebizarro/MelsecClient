@@ -31,7 +31,7 @@ namespace Melsec
         public override float[] ReadReal(ushort point, MelsecDeviceType DeviceType, byte count)
         {
             byte[] addr = GetPointBytes(point);
-            byte[] cnt = GetPointCount((ushort)(count * 2));
+            byte[] cnt = GetPointCount(count * 2);
             byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
 				0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],
@@ -50,7 +50,7 @@ namespace Melsec
 #warning test method
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[PACKET_HEADER_LENGTH + count * 4];
-            byte[] len = GetPointCount((ushort)(sendbuffer.Length - ERROR_CODE_POSITION));
+            byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
             byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x03,0x04,0x00,0x00,0x00,(byte)count};
             Array.Copy(buff1, sendbuffer, buff1.Length);
@@ -97,7 +97,7 @@ namespace Melsec
         public override uint[] ReadDword(ushort point, MelsecDeviceType DeviceType, byte count)
         {
             byte[] addr = GetPointBytes(point);
-            byte[] cnt = GetPointCount((ushort)(count * 2));
+            byte[] cnt = GetPointCount(count * 2);
             byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
 				0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],

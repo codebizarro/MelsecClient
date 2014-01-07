@@ -16,5 +16,10 @@ namespace Melsec
                 return (MelsecEthProtocol)melsecProtocol;
             }
         }
+
+        public override string ToString()
+        {
+            return Protocol.ToString();
+        }
     }
 }

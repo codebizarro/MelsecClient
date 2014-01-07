@@ -73,5 +73,10 @@ namespace Melsec
                 return buff;
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}:{1}", Ip, Port);
+        }
     }
 }

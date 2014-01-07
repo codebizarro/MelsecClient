@@ -50,26 +50,28 @@ namespace Melsec
 
         protected byte[] GetPointBytes(ushort point)
         {
-            byte[] tmp = BitConverter.GetBytes(point);
-            //if (tmp.Length == 0) return new byte[0];
-            byte[] addr = new byte[3];
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                addr[i] = tmp[i];
-            }
-            return addr;
+            return GetBytes(point, 3);
         }
 
-        protected byte[] GetPointCount(ushort count)
+        protected byte[] GetPointCount(int count)
         {
-            byte[] tmp = BitConverter.GetBytes(count);
-            //if (tmp.Length == 0) return new byte[0];
-            byte[] cnt = new byte[2];
+            return GetBytes(count, 2);
+        }
+
+        protected byte[] GetRequestDataLength(int val)
+        {
+            return GetBytes(val, 2);
+        }
+
+        private byte[] GetBytes(int val, byte cnt)
+        {
+            byte[] tmp = BitConverter.GetBytes(val);
+            byte[] ret = new byte[cnt];
             for (int i = 0; i < tmp.Length; i++)
             {
-                cnt[i] = tmp[i];
+                ret[i] = tmp[i];
             }
-            return cnt;
+            return ret;
         }
 
         protected abstract byte[] SendBuffer(byte[] buffer);
