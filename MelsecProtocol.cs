@@ -66,8 +66,12 @@ namespace Melsec
         private byte[] GetBytes(int val, byte cnt)
         {
             byte[] tmp = BitConverter.GetBytes(val);
+            if (tmp.Length < cnt)
+            {
+                new Exception("Array size mismatch");
+            }
             byte[] ret = new byte[cnt];
-            for (int i = 0; i < tmp.Length; i++)
+            for (int i = 0; i < ret.Length; i++)
             {
                 ret[i] = tmp[i];
             }

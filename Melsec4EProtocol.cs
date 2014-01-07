@@ -81,7 +81,7 @@ namespace Melsec
             {
                 byte[] addr = GetPointBytes(point[i]);
                 byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType };
-                Array.Copy(new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType }, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
+                Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
             }
             byte[] recvbuffer = SendBuffer(sendbuffer);
             int dataLen = recvbuffer.Length - ReturnValuePosition;
