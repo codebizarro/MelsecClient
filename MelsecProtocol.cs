@@ -68,7 +68,7 @@ namespace Melsec
             byte[] tmp = BitConverter.GetBytes(val);
             if (tmp.Length < cnt)
             {
-                new Exception("Array size mismatch");
+                throw new Exception("Array size mismatch");
             }
             byte[] ret = new byte[cnt];
             for (int i = 0; i < ret.Length; i++)
@@ -88,6 +88,10 @@ namespace Melsec
 
         public abstract void WriteReal(ushort point, float val, MelsecDeviceType DeviceType);
 
+        public abstract void WriteReal(ushort point, float[] val, MelsecDeviceType DeviceType);
+
+        public abstract void WriteReal(ushort[] point, float[] val, MelsecDeviceType DeviceType);
+
         public abstract uint ReadDword(ushort point, MelsecDeviceType DeviceType);
 
         public abstract uint[] ReadDword(ushort point, MelsecDeviceType DeviceType, byte count);
@@ -96,6 +100,10 @@ namespace Melsec
 
         public abstract void WriteDword(ushort point, uint val, MelsecDeviceType DeviceType);
 
+        public abstract void WriteDword(ushort point, uint[] val, MelsecDeviceType DeviceType);
+
+        public abstract void WriteDword(ushort[] point, uint[] val, MelsecDeviceType DeviceType);
+
         public abstract ushort ReadWord(ushort point, MelsecDeviceType DeviceType);
 
         public abstract ushort[] ReadWord(ushort point, MelsecDeviceType DeviceType, byte count);
@@ -103,6 +111,10 @@ namespace Melsec
         public abstract ushort[] ReadWord(ushort[] point, MelsecDeviceType DeviceType);
 
         public abstract void WriteWord(ushort point, ushort val, MelsecDeviceType DeviceType);
+
+        public abstract void WriteWord(ushort point, ushort[] val, MelsecDeviceType DeviceType);
+
+        public abstract void WriteWord(ushort[] point, ushort[] val, MelsecDeviceType DeviceType);
 
         public abstract bool ReadByte(ushort point, MelsecDeviceType DeviceType);
 
