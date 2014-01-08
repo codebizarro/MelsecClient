@@ -92,11 +92,15 @@ namespace Melsec
 
         public abstract uint[] ReadDword(ushort point, MelsecDeviceType DeviceType, byte count);
 
+        public abstract uint[] ReadDword(ushort[] point, MelsecDeviceType DeviceType);
+
         public abstract void WriteDword(ushort point, uint val, MelsecDeviceType DeviceType);
 
         public abstract ushort ReadWord(ushort point, MelsecDeviceType DeviceType);
 
         public abstract ushort[] ReadWord(ushort point, MelsecDeviceType DeviceType, byte count);
+        
+        public abstract ushort[] ReadWord(ushort[] point, MelsecDeviceType DeviceType);
 
         public abstract void WriteWord(ushort point, ushort val, MelsecDeviceType DeviceType);
 
