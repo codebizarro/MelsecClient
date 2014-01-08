@@ -283,6 +283,17 @@ namespace Melsec
             return ret;
         }
 
+        public override bool[] ReadByte(ushort[] point, MelsecDeviceType DeviceType)
+        {
+            ushort[] us = ReadWord(point, DeviceType);
+            bool[] ret = new bool[us.Length];
+            for (int i = 0; i < ret.Length; ++i)
+            {
+                ret[i] = ((us[i] & 1) == 1);
+            }
+            return ret;
+        }
+
         public override void WriteByte(ushort point, bool state, MelsecDeviceType DeviceType)
         {
             byte[] addr = GetPointBytes(point);
