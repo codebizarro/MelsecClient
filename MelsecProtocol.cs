@@ -123,5 +123,9 @@ namespace Melsec
         public abstract bool[] ReadByte(ushort[] point, MelsecDeviceType DeviceType);
 
         public abstract void WriteByte(ushort point, bool state, MelsecDeviceType DeviceType);
+
+        public abstract void WriteByte(ushort point, bool[] state, MelsecDeviceType DeviceType);
+
+        public abstract void WriteByte(ushort[] point, bool[] state, MelsecDeviceType DeviceType);
     }
 }

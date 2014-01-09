@@ -68,6 +68,8 @@ namespace Melsec
 
         public override float[] ReadReal(ushort[] point, MelsecDeviceType DeviceType)
         {
+            if (point.Length == 0)
+                throw new Exception(Globals.NO_DATA_READ);
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[21 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
@@ -105,6 +107,8 @@ namespace Melsec
 
         public override void WriteReal(ushort point, float[] val, MelsecDeviceType DeviceType)
         {
+            if (val.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
             byte[] addr = GetPointBytes(point);
             ushort count = (ushort)val.Length;
             byte[] cnt = GetPointCount(count * 2);
@@ -126,7 +130,9 @@ namespace Melsec
         public override void WriteReal(ushort[] point, float[] val, MelsecDeviceType DeviceType)
         {
             if (point.Length != val.Length)
-                throw new Exception("Address and points array size mismatch");
+                throw new Exception(Globals.SIZE_MISMATCH);
+            if (val.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[21 + count * 8];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
@@ -179,6 +185,8 @@ namespace Melsec
 
         public override uint[] ReadDword(ushort[] point, MelsecDeviceType DeviceType)
         {
+            if (point.Length == 0)
+                throw new Exception(Globals.NO_DATA_READ);
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[21 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
@@ -216,6 +224,8 @@ namespace Melsec
 
         public override void WriteDword(ushort point, uint[] val, MelsecDeviceType DeviceType)
         {
+            if (val.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
             byte[] addr = GetPointBytes(point);
             ushort count = (ushort)val.Length;
             byte[] cnt = GetPointCount(count * 2);
@@ -237,7 +247,9 @@ namespace Melsec
         public override void WriteDword(ushort[] point, uint[] val, MelsecDeviceType DeviceType)
         {
             if (point.Length != val.Length)
-                throw new Exception("Address and points array size mismatch");
+                throw new Exception(Globals.SIZE_MISMATCH);
+            if (val.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[21 + count * 8];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
@@ -290,6 +302,8 @@ namespace Melsec
 
         public override ushort[] ReadWord(ushort[] point, MelsecDeviceType DeviceType)
         {
+            if (point.Length == 0)
+                throw new Exception(Globals.NO_DATA_READ);
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[21 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
@@ -327,6 +341,8 @@ namespace Melsec
 
         public override void WriteWord(ushort point, ushort[] val, MelsecDeviceType DeviceType)
         {
+            if (val.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
             byte[] addr = GetPointBytes(point);
             ushort count = (ushort)val.Length;
             byte[] cnt = GetPointCount(count);
@@ -342,13 +358,15 @@ namespace Melsec
                 byte[] buff2 = new byte[] { wval[0], wval[1] };
                 Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
             }
-            SendBuffer(sendbuffer);  
+            SendBuffer(sendbuffer);
         }
 
         public override void WriteWord(ushort[] point, ushort[] val, MelsecDeviceType DeviceType)
         {
             if (point.Length != val.Length)
-                throw new Exception("Address and points array size mismatch");
+                throw new Exception(Globals.SIZE_MISMATCH);
+            if (val.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[21 + count * 6];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
@@ -410,6 +428,8 @@ namespace Melsec
 
         public override bool[] ReadByte(ushort[] point, MelsecDeviceType DeviceType)
         {
+            if (point.Length == 0)
+                throw new Exception(Globals.NO_DATA_READ);
             ushort[] us = ReadWord(point, DeviceType);
             bool[] ret = new bool[us.Length];
             for (int i = 0; i < ret.Length; ++i)
@@ -432,6 +452,64 @@ namespace Melsec
 				(byte)DeviceType,
 				0x01,0x00,
 				On};
+            SendBuffer(sendbuffer);
+        }
+
+        public override void WriteByte(ushort point, bool[] state, MelsecDeviceType DeviceType)
+        {
+            if (state.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
+            if (state.Length == 1)
+            {
+                WriteByte(point, state[0], DeviceType);
+            }
+            else
+            {
+                ushort count = (ushort)state.Length;
+                if (count % 2 != 0)
+                {
+                    throw new Exception(Globals.SIZE_MISMATCH);
+                }
+                byte[] addr = GetPointBytes(point);
+                byte[] cnt = GetPointCount(count);
+                byte[] sendbuffer = new byte[25 + count / 2];
+                byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
+                byte[] buff1 = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                    0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+                    0x01,0x14,0x01,0x00,addr[0],addr[1],addr[2],(byte)DeviceType, cnt[0],cnt[1]};
+                Array.Copy(buff1, sendbuffer, buff1.Length);
+                for (int i = 0, j = 0; i < count; i += 2, ++j)
+                {
+                    byte[] buff2 = new byte[1];
+                    if (state[i]) buff2[0] |= 0x10;
+                    if (state[i + 1]) buff2[0] |= 0x01;
+                    Array.Copy(buff2, 0, sendbuffer, buff1.Length + j * buff2.Length, buff2.Length);
+                }
+                SendBuffer(sendbuffer);
+            }
+        }
+
+        public override void WriteByte(ushort[] point, bool[] state, MelsecDeviceType DeviceType)
+        {
+            if (point.Length != state.Length)
+                throw new Exception(Globals.SIZE_MISMATCH);
+            if (state.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
+            ushort count = (ushort)point.Length;
+            byte[] sendbuffer = new byte[20 + count * 5];
+            byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
+            byte[] buff1 = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+				0x02,0x14,0x01,0x00,(byte)count};
+            Array.Copy(buff1, sendbuffer, buff1.Length);
+            for (int i = 0; i < count; ++i)
+            {
+                byte[] addr = GetPointBytes(point[i]);
+                byte[] bval = new byte[1];
+                if (state[i]) bval[0] = 1;
+                byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType, bval[0] };
+                Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
+            }
             SendBuffer(sendbuffer);
         }
 

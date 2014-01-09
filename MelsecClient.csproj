@@ -48,6 +48,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Globals.cs" />
     <Compile Include="MelsecComClient.cs" />
     <Compile Include="MelsecEthClient.cs" />
     <Compile Include="MelsecGlobals.cs" />
