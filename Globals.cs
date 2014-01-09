@@ -1,6 +1,6 @@
 ﻿namespace Melsec
 {    
-    class Globals
+    internal class Globals
     {
         public const string SIZE_MISMATCH = "Address and points array size mismatch";
         public const string NO_DATA_WRITE = "No data to write";

@@ -1,5 +1,3 @@
-using System;
-
 namespace Melsec
 {
     public enum MelsecDeviceType : byte
