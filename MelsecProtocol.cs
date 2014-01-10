@@ -30,7 +30,7 @@ namespace Melsec
             {
                 if (value > 0)
                     receiveTimeout = value;
-                else throw new Exception("Receive timeout must be greater than zero");
+                else throw new Exception(Globals.LESS_ZERO_TIMEOUT);
             }
         }
 
@@ -44,7 +44,7 @@ namespace Melsec
             {
                 if (value > 0)
                     sendTimeout = value;
-                else throw new Exception("Send timeout must be greater than zero");
+                else throw new Exception(Globals.LESS_ZERO_TIMEOUT);
             }
         }
 
