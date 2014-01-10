@@ -66,5 +66,51 @@ namespace Melsec
             //HexInt(ref DayOfWeek);
             return new DateTime((int)Year, (int)Month, (int)Day, (int)Hour, (int)Minute, (int)Second);
         }
+
+        public CpuStatus ReadCPUStatus()
+        {
+            ushort status = melsecProtocol.ReadWord(203, MelsecDeviceType.SpecialRegister);
+            int[] bStatus = new int[1];
+            bStatus[0] = status & ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 15));
+            switch (bStatus[0])
+            {
+                case 0: return CpuStatus.RUN;
+                case 1: return CpuStatus.STEPRUN;
+                case 2: return CpuStatus.STOP;
+                case 3: return CpuStatus.PAUSE;
+                default: return CpuStatus.NONE;
+            }
+        }
+        
+        public SwitchStatus ReadSwitchStatus()
+        {
+            ushort status = melsecProtocol.ReadWord(200, MelsecDeviceType.SpecialRegister);
+            int[] bStatus = new int[1];
+            bStatus[0] = status & ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (1 << 15));
+            switch (bStatus[0])
+            {
+                case 0: return SwitchStatus.RUN;
+                case 1: return SwitchStatus.STOP;
+                case 2: return SwitchStatus.LCLR;
+                default: return SwitchStatus.NONE;
+            }
+        }
+        
+        public StopPauseCause ReadStopPauseCause()
+        {
+            ushort status = melsecProtocol.ReadWord(203, MelsecDeviceType.SpecialRegister);
+            int[] bStatus = new int[1];
+            bStatus[0] = status & ((1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 15));
+            bStatus[0] >>= 4;
+            switch (bStatus[0])
+            {
+                case 0: return StopPauseCause.BySwitch;
+                case 1: return StopPauseCause.RemoteRelay;
+                case 2: return StopPauseCause.RemoteDevice;
+                case 3: return StopPauseCause.ByProgram;
+                case 4: return StopPauseCause.ByError;
+                default: return StopPauseCause.None;
+            }
+        }
     }
 }

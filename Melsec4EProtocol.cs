@@ -521,5 +521,76 @@ namespace Melsec
 				0x00,0x00};
             SendBuffer(sendbuffer);
         }
+
+        public override void Run(bool forced, ClearMode mode)
+        {
+            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
+            byte[] sendbuffer = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                0x00,0xFF,0xFF,0x03,0x00,0x0A,0x00,0x10,0x00,
+				0x01,0x10,
+				0x00,0x00,
+                frcd,0x00,
+                (byte)mode, 0x00};
+            SendBuffer(sendbuffer);
+        }
+
+        public override void Pause(bool forced)
+        {
+            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
+            byte[] sendbuffer = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+				0x03,0x10,
+				0x00,0x00,
+                frcd,0x00};
+            SendBuffer(sendbuffer);
+        }
+
+        public override void Stop()
+        {
+            byte[] sendbuffer = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+				0x02,0x10,
+				0x00,0x00,
+                0x01,0x00};
+            SendBuffer(sendbuffer);
+        }
+
+        public override void Reset()
+        {
+            byte[] sendbuffer = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+				0x06,0x10,
+				0x00,0x00,
+                0x01,0x00};
+            try
+            {
+                SendBuffer(sendbuffer);
+            }
+            catch { }
+        }
+
+        public override void LatchClear()
+        {
+            byte[] sendbuffer = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+				0x05,0x10,
+				0x00,0x00,
+                0x01,0x00};
+            SendBuffer(sendbuffer);
+        }
+
+        public override string ReadCPUModelName()
+        {
+            byte[] sendbuffer = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                0x00,0xFF,0xFF,0x03,0x00,0x06,0x00,0x10,0x00,
+				0x01,0x01,
+				0x00,0x00};
+            byte[] recvbuffer = SendBuffer(sendbuffer);
+            int dataLen = recvbuffer.Length - ReturnValuePosition;
+            byte[] name = new byte[dataLen];
+            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, name, 0, dataLen - 2);
+            string ret = System.Text.Encoding.UTF8.GetString(name);
+            return ret;
+        }
     }
 }

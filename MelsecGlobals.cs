@@ -31,4 +31,38 @@ namespace Melsec
         FileRegister = 0xAF,
         FileIndexregister = 0xB0
     };
+
+    public enum ClearMode : byte
+    {
+        None = 0x00,
+        OutsideLatch = 0x01,
+        All = 0x02
+    }
+
+    public enum SwitchStatus
+    {
+        NONE = 0,
+        RUN = 1,
+        STOP = 2,
+        LCLR = 3
+    }
+
+    public enum CpuStatus
+    {
+        NONE = 0,        
+        RUN = 1,
+        STEPRUN = 2,
+        STOP = 3,
+        PAUSE = 4
+    }
+
+    public enum StopPauseCause
+    {
+        None,
+        BySwitch,
+        RemoteRelay,
+        RemoteDevice,
+        ByProgram,
+        ByError
+    }
 }

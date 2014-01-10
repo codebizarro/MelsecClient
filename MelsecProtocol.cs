@@ -127,5 +127,18 @@ namespace Melsec
         public abstract void WriteByte(ushort point, bool[] state, MelsecDeviceType DeviceType);
 
         public abstract void WriteByte(ushort[] point, bool[] state, MelsecDeviceType DeviceType);
+
+        public abstract void Run(bool forced, ClearMode mode);
+
+        public abstract void Pause(bool forced);
+
+        public abstract void Stop();
+
+        public abstract void Reset();
+
+        public abstract void LatchClear();
+
+        public abstract string ReadCPUModelName();
+
     }
 }
