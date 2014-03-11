@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Melsec
+namespace System.Net.Melsec
 {
     public sealed class Melsec3EProtocol : MelsecEthProtocol
     {

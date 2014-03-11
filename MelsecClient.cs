@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace Melsec
+namespace System.Net.Melsec
 {
     public abstract class MelsecClient
     {

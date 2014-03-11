@@ -1,6 +1,6 @@
 using System;
 
-namespace Melsec
+namespace System.Net.Melsec
 {
     public sealed class MelsecComClient : MelsecClient
     {

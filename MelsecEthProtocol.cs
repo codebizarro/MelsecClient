@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Melsec
+namespace System.Net.Melsec
 {
     public abstract class MelsecEthProtocol : MelsecProtocol
     {

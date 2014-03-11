@@ -1,6 +1,6 @@
 using System;
 
-namespace Melsec
+namespace System.Net.Melsec
 {
     public abstract class MelsecComProtocol : MelsecProtocol
     {
