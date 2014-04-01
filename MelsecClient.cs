@@ -7,9 +7,17 @@ namespace System.Net.Melsec
     {
         protected readonly MelsecProtocol melsecProtocol;
 
-        protected MelsecClient(MelsecProtocol protocol, int receiveTimeout, int sendTimeout)
+        protected MelsecClient(ProtocolType protocoltype, string ip, ushort port, int receiveTimeout, int sendTimeout)
         {
-            melsecProtocol = protocol;
+            switch (protocoltype)
+            {
+                case ProtocolType.Melsec3EProtocol:
+                    melsecProtocol = new Melsec3EProtocol(ip, port);
+                    break;
+                case ProtocolType.Melsec4EProtocol:
+                    melsecProtocol = new Melsec4EProtocol(ip, port);
+                    break;
+            }
             melsecProtocol.SendTimeout = sendTimeout;
             melsecProtocol.ReceiveTimeout = receiveTimeout;
         }

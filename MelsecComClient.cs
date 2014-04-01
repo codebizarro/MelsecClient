@@ -4,8 +4,8 @@ namespace System.Net.Melsec
 {
     public sealed class MelsecComClient : MelsecClient
     {
-        public MelsecComClient(MelsecComProtocol protocol, int receiveTimeout, int sendTimeout)
-            : base(protocol, receiveTimeout, sendTimeout)
+        public MelsecComClient(ProtocolType protocoltype, string ip, ushort port, int receiveTimeout, int sendTimeout)
+            : base(protocoltype, ip, port, receiveTimeout, sendTimeout)
         {
         }
 

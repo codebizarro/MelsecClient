@@ -9,7 +9,7 @@ namespace System.Net.Melsec
         private const int RETURN_VALUE_POSITION = 15;
         private const byte RETURN_PACKET_HEADER = 0xD4;
 
-        public Melsec4EProtocol(string ip, ushort port)
+        internal Melsec4EProtocol(string ip, ushort port)
             : base(ip, port, ERROR_CODE_POSITION, MIN_RESPONSE_LENGTH, RETURN_VALUE_POSITION, RETURN_PACKET_HEADER)
         {
             Random rnd = new Random();
