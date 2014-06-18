@@ -11,6 +11,8 @@ namespace System.Net.Melsec
         private readonly int MinResponseLength;
         protected readonly int ReturnValuePosition;
         private readonly byte ReturnPacketHeader;
+        protected byte NetNo = 0x00;
+        protected byte PcNo = 0xFF;
 
         protected MelsecEthProtocol(string ip, ushort port, int errorCodePosition, int minResponseLength, int returnValuePosition, byte returnPacketHeader)
         {
@@ -44,6 +46,30 @@ namespace System.Net.Melsec
                 if (value > 0)
                     ipep.Port = value;
                 else throw new Exception("Port number must be greater than zero");
+            }
+        }
+
+        public byte NetworkNo
+        {
+            get
+            {
+                return NetNo;
+            }
+            set
+            {
+                NetNo = value;
+            }
+        }
+
+        public byte StationNo
+        {
+            get
+            {
+                return PcNo;
+            }
+            set
+            {
+                PcNo = value;
             }
         }
 

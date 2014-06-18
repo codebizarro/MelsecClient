@@ -17,7 +17,7 @@ namespace System.Net.Melsec
         public override float ReadReal(ushort point, MelsecDeviceType DeviceType)
         {
             byte[] addr = GetPointBytes(point);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
 				0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -31,7 +31,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count * 2);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
 				0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -51,7 +51,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[17 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x03,0x04,0x00,0x00,0x00,(byte)count};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -72,7 +72,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] rVal = BitConverter.GetBytes(val);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x10,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x10,0x00,0x10,0x00,
 				0x01,0x14,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -90,7 +90,7 @@ namespace System.Net.Melsec
             byte[] cnt = GetPointCount(count * 2);
             byte[] sendbuffer = new byte[21 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x01,0x14,0x00,0x00,addr[0],addr[1],addr[2],(byte)DeviceType,cnt[0],cnt[1]};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -111,7 +111,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[17 + count * 8];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x02,0x14,0x00,0x00,0x00,(byte)count};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -128,7 +128,7 @@ namespace System.Net.Melsec
         public override uint ReadDword(ushort point, MelsecDeviceType DeviceType)
         {
             byte[] addr = GetPointBytes(point);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -142,7 +142,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count * 2);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
 				0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -162,7 +162,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[17 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x03,0x04,0x00,0x00,0x00,(byte)count};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -183,7 +183,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] dwVal = BitConverter.GetBytes(val);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x10,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x10,0x00,0x10,0x00,
 				0x01,0x14,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -201,7 +201,7 @@ namespace System.Net.Melsec
             byte[] cnt = GetPointCount(count * 2);
             byte[] sendbuffer = new byte[21 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x01,0x14,0x00,0x00,addr[0],addr[1],addr[2],(byte)DeviceType,cnt[0],cnt[1]};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -222,7 +222,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[17 + count * 8];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x02,0x14,0x00,0x00,0x00,(byte)count};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -239,7 +239,7 @@ namespace System.Net.Melsec
         public override ushort ReadWord(ushort point, MelsecDeviceType DeviceType)
         {
             byte[] addr = GetPointBytes(point);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -253,7 +253,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
 				0x01,0x04,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -273,7 +273,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[17 + count * 4];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x03,0x04,0x00,0x00,(byte)count,0x00};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -294,7 +294,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] wVal = BitConverter.GetBytes(val);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0E,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0E,0x00,0x10,0x00,
 				0x01,0x14,0x00,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -312,7 +312,7 @@ namespace System.Net.Melsec
             byte[] cnt = GetPointCount(count);
             byte[] sendbuffer = new byte[21 + count * 2];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x01,0x14,0x00,0x00,addr[0],addr[1],addr[2],(byte)DeviceType,cnt[0],cnt[1]};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -333,7 +333,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[17 + count * 6];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x02,0x14,0x00,0x00,(byte)count,0x00};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -350,7 +350,7 @@ namespace System.Net.Melsec
         public override bool ReadByte(ushort point, MelsecDeviceType DeviceType)
         {
             byte[] addr = GetPointBytes(point);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x01,0x04,0x01,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -364,7 +364,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0C,0x00,0x10,0x00,
 				0x01,0x04,0x01,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -404,7 +404,7 @@ namespace System.Net.Melsec
             byte On;
             if (state) On = 0x10;
             else On = 0x00;
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0D,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0D,0x00,0x10,0x00,
 				0x01,0x14,0x01,0x00,
 				addr[0],addr[1],addr[2],
 				(byte)DeviceType,
@@ -432,7 +432,7 @@ namespace System.Net.Melsec
                 byte[] cnt = GetPointCount(count);
                 byte[] sendbuffer = new byte[21 + count / 2];
                 byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-                byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+                byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
                                                0x01,0x14,0x01,0x00,addr[0],addr[1],addr[2],(byte)DeviceType, cnt[0],cnt[1]};
                 Array.Copy(buff1, sendbuffer, buff1.Length);
                 for (int i = 0, j = 0; i < count; i += 2, ++j)
@@ -455,7 +455,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)point.Length;
             byte[] sendbuffer = new byte[16 + count * 5];
             byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
-            byte[] buff1 = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,len[0],len[1],0x10,0x00,
 				0x02,0x14,0x01,0x00,(byte)count};
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
@@ -471,7 +471,7 @@ namespace System.Net.Melsec
 
         public override void ErrLedOff()
         {
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x06,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x06,0x00,0x10,0x00,
 				0x17,0x16,
 				0x00,0x00};
             SendBuffer(sendbuffer);
@@ -479,8 +479,8 @@ namespace System.Net.Melsec
 
         public override void Run(bool forced, ClearMode mode)
         {
-            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;      
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x0A,0x00,0x10,0x00,
+            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x0A,0x00,0x10,0x00,
 				0x01,0x10,
 				0x00,0x00,
                 frcd,0x00,
@@ -490,8 +490,8 @@ namespace System.Net.Melsec
 
         public override void Pause(bool forced)
         {
-            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;   
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
 				0x03,0x10,
 				0x00,0x00,
                 frcd,0x00};
@@ -500,7 +500,7 @@ namespace System.Net.Melsec
 
         public override void Stop()
         {
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
 				0x02,0x10,
 				0x00,0x00,
                 0x01,0x00};
@@ -509,7 +509,7 @@ namespace System.Net.Melsec
 
         public override void Reset()
         {
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
 				0x06,0x10,
 				0x00,0x00,
                 0x01,0x00};
@@ -522,7 +522,7 @@ namespace System.Net.Melsec
 
         public override void LatchClear()
         {
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x08,0x00,0x10,0x00,
 				0x05,0x10,
 				0x00,0x00,
                 0x01,0x00};
@@ -531,7 +531,7 @@ namespace System.Net.Melsec
 
         public override string ReadCPUModelName()
         {
-            byte[] sendbuffer = new byte[] {0x50,0x00,0x00,0xFF,0xFF,0x03,0x00,0x06,0x00,0x10,0x00,
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,0xFF,0x03,0x00,0x06,0x00,0x10,0x00,
 				0x01,0x01,
 				0x00,0x00};
             byte[] recvbuffer = SendBuffer(sendbuffer);
