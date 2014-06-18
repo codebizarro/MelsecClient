@@ -88,11 +88,11 @@ namespace System.Net.Melsec
                 if (buff.Length > MinResponseLength)
                 {
                     if (buff[0] != ReturnPacketHeader)
-                        throw new Exception(string.Format("Response header PLC is corrupt: {0} <> {1}",
+                        throw new Exception(string.Format("Response header PLC is corrupt: {0:X2} ({0}) <> {1:X2} ({1})",
                                                                         ReturnPacketHeader, buff[0]));
                     LastError = BitConverter.ToUInt16(buff, ErrorCodePosition);
                     if (LastError != 0)
-                        throw new Exception(string.Format("PLC return error code: {0}", LastError));
+                        throw new Exception(string.Format("PLC return error code: 0x{0:X4} ({0})", LastError));
                 }
                 else throw new Exception(string.Format("PLC returned buffer is too small: {0}", buff.Length));
                 uc.Close();
@@ -102,7 +102,7 @@ namespace System.Net.Melsec
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}", Ip, Port);
+            return string.Format("{0}:{1} 0x{2:X2}:0x{3:X2}", Ip, Port, NetworkNo, StationNo);
         }
     }
 }
