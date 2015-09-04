@@ -37,10 +37,8 @@ namespace System.Net.Melsec
             ushort id213 = ushort.Parse(sd213, NumberStyles.HexNumber);
             int d210 = (id211 << 16) | id210;
             int d212 = (id213 << 16) | id212;
-            melsecProtocol.WriteByte(213, false, MelsecDeviceType.SpecialRelay);
-            melsecProtocol.WriteByte(211, false, MelsecDeviceType.SpecialRelay);
-            melsecProtocol.WriteDword(210, (uint)d210, MelsecDeviceType.SpecialRegister);
-            melsecProtocol.WriteDword(212, (uint)d212, MelsecDeviceType.SpecialRegister);
+            melsecProtocol.WriteByte(new ushort[] { 213, 211 }, new bool[] { false, false }, MelsecDeviceType.SpecialRelay);
+            melsecProtocol.WriteDword(new ushort[] { 210, 212 }, new uint[] { (uint)d210, (uint)d212 }, MelsecDeviceType.SpecialRegister);
             melsecProtocol.WriteByte(210, false, MelsecDeviceType.SpecialRelay);
             melsecProtocol.WriteByte(210, true, MelsecDeviceType.SpecialRelay);
             melsecProtocol.WriteByte(210, false, MelsecDeviceType.SpecialRelay);
@@ -55,8 +53,9 @@ namespace System.Net.Melsec
         public DateTime GetQTime()
         {
             melsecProtocol.WriteByte(213, true, MelsecDeviceType.SpecialRelay);
-            uint d210 = melsecProtocol.ReadDword(210, MelsecDeviceType.SpecialRegister);
-            uint d212 = melsecProtocol.ReadDword(212, MelsecDeviceType.SpecialRegister);
+            uint[] d = melsecProtocol.ReadDword(210, MelsecDeviceType.SpecialRegister, 2);
+            uint d210 = d[0];
+            uint d212 = d[1];
             melsecProtocol.WriteByte(213, false, MelsecDeviceType.SpecialRelay);
             uint Year = (((d212 >> 16) & 0xFF00) | ((d210 >> 8) & 0xFF));
             uint Month = (d210 & 0xFF);

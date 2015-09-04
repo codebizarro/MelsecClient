@@ -1,46 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
   <Font Name="Segoe UI" Size="9" />
-  <Class Name="Melsec.Melsec3EProtocol">
+  <Class Name="System.Net.Melsec.Melsec3EProtocol">
     <Position X="5.5" Y="0.75" Width="2.25" />
     <TypeIdentifier>
       <FileName>Melsec3EProtocol.cs</FileName>
-      <HashCode>AAQAAIMAAEAAAIACAAAAAAAAAAEIAMAkAAAAAIAAAAA=</HashCode>
+      <HashCode>AAQgAIMAAEACBIACAAAAAAAAAAEIAMAkIAAAAAAAAAo=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Melsec.Melsec4EProtocol">
+  <Class Name="System.Net.Melsec.Melsec4EProtocol">
     <Position X="8.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <FileName>Melsec4EProtocol.cs</FileName>
-      <HashCode>AAQAAIMAAEQAAIACAAIAAAAAAAEIAMAkAAIAAIAAAAA=</HashCode>
+      <HashCode>AAQgAIMAAEQCBIACAAIAAAAAAAEIAMAkIAIAAAAAAAo=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Melsec.MelsecClient">
+  <Class Name="System.Net.Melsec.MelsecClient">
     <Position X="11.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <FileName>MelsecClient.cs</FileName>
-      <HashCode>AAAEAAAAAIAAAAgAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAEAAAAAIAACAgAAAAAAAABAAABABAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Melsec.MelsecEthClient">
+  <Class Name="System.Net.Melsec.MelsecEthClient">
     <Position X="11.25" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <FileName>MelsecEthClient.cs</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Melsec.MelsecEthProtocol">
+  <Class Name="System.Net.Melsec.MelsecEthProtocol">
     <Position X="3.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <FileName>MelsecEthProtocol.cs</FileName>
-      <HashCode>AAAAAIAAAAQgAAAAAAABoAAACAAAAAAAAAAABAAAIAA=</HashCode>
+      <HashCode>AAAAAMAAAAQgAAAEAAABoAAACAAAAAAAAAAABAABIRA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Melsec.MelsecProtocol">
+  <Class Name="System.Net.Melsec.MelsecProtocol">
     <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <FileName>MelsecProtocol.cs</FileName>
-      <HashCode>ACQgAAEAIEQAAAAAAAAgAAgAIAEIAMCkAAAAAAAAAAA=</HashCode>
+      <HashCode>ACSgAAEAIEQCBAAAAAAgAAgAIAEIAMCkIAAAIAAAAAo=</HashCode>
     </TypeIdentifier>
   </Class>
 </ClassDiagram>
