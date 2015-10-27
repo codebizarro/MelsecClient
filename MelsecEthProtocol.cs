@@ -13,7 +13,7 @@ namespace System.Net.Melsec
         private readonly byte ReturnPacketHeader;
         protected byte NetNo = 0x00;
         protected byte PcNo = 0xFF;
-        protected DestinationCpu destinationCpu = DestinationCpu.LocalStation;
+        protected byte destinationCpu = (byte)DestinationCpu.LocalStation;
 
         protected MelsecEthProtocol(string ip, ushort port, int errorCodePosition, int minResponseLength, int returnValuePosition, byte returnPacketHeader)
         {
