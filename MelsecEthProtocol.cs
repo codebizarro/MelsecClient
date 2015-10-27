@@ -74,6 +74,18 @@ namespace System.Net.Melsec
             }
         }
 
+        public DestinationCpu DestinationCpu
+        {
+            get
+            {
+                return (DestinationCpu)destinationCpu;
+            }
+            set
+            {
+                destinationCpu = (byte)value;
+            }
+        }
+
         public abstract void ErrLedOff();
 
         protected override byte[] SendBuffer(byte[] buffer)
