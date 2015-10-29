@@ -118,8 +118,12 @@ namespace System.Net.Melsec
                     if (stream.CanRead)
                     {
                         System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
-                        byte[] buff = new byte[32];
+                        byte[] header = new byte[ErrorCodePosition];
                         int n = 0;
+                        n = stream.Read(header, 0, header.Length);
+                        lst.AddRange(header);
+                        short lenght = BitConverter.ToInt16(header, ErrorCodePosition - 2);
+                        byte[] buff = new byte[lenght];
                         do
                         {
                             n = stream.Read(buff, 0, buff.Length);
