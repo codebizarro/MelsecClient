@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace System.Net.Melsec
 {
@@ -86,31 +87,64 @@ namespace System.Net.Melsec
             }
         }
 
+        public bool UseTcp { get; set; }
+
         public abstract void ErrLedOff();
 
         protected override byte[] SendBuffer(byte[] buffer)
         {
-            using (UdpClient uc = new UdpClient())
+            byte[] outBuff = new byte[0];
+            if (!UseTcp)
             {
-                byte[] buff = new byte[0];
-                uc.Client.SendTimeout = SendTimeout;
-                uc.Client.ReceiveTimeout = ReceiveTimeout;
-                uc.Connect(ipep);
-                uc.Send(buffer, buffer.Length);
-                buff = uc.Receive(ref ipep);
-                if (buff.Length > MinResponseLength)
+                using (UdpClient uc = new UdpClient())
                 {
-                    if (buff[0] != ReturnPacketHeader)
-                        throw new Exception(string.Format("Response header PLC is corrupt: {0:X2} ({0}) <> {1:X2} ({1})",
-                                                                        ReturnPacketHeader, buff[0]));
-                    LastError = BitConverter.ToUInt16(buff, ErrorCodePosition);
-                    if (LastError != 0)
-                        throw new Exception(string.Format("PLC return error code: 0x{0:X4} ({0})", LastError));
+                    uc.Client.SendTimeout = SendTimeout;
+                    uc.Client.ReceiveTimeout = ReceiveTimeout;
+                    uc.Connect(ipep);
+                    uc.Send(buffer, buffer.Length);
+                    outBuff = uc.Receive(ref ipep);
+                    uc.Close();
                 }
-                else throw new Exception(string.Format("PLC returned buffer is too small: {0}", buff.Length));
-                uc.Close();
-                return buff;
             }
+            else
+            {
+                using (TcpClient tc = new TcpClient())
+                {
+                    tc.Client.SendTimeout = SendTimeout;
+                    tc.Client.ReceiveTimeout = ReceiveTimeout;
+                    tc.Connect(ipep);
+                    NetworkStream stream = tc.GetStream();
+                    stream.Write(buffer, 0, buffer.Length);
+                    if (stream.CanRead)
+                    {
+                        System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
+                        byte[] buff = new byte[32];
+                        int n = 0;
+                        do
+                        {
+                            n = stream.Read(buff, 0, buff.Length);
+                            for (int i = 0; i < n; ++i)
+                                lst.Add(buff[i]);
+                        }
+                        while (stream.DataAvailable);
+                        outBuff = lst.ToArray();
+                    }
+                    stream.Close();
+                    tc.Close();
+                }
+            }
+            if (outBuff.Length > MinResponseLength)
+            {
+                if (outBuff[0] != ReturnPacketHeader)
+                    throw new Exception(string.Format("Response header PLC is corrupt: {0:X2} ({0}) <> {1:X2} ({1})",
+                                                                    ReturnPacketHeader, outBuff[0]));
+                LastError = BitConverter.ToUInt16(outBuff, ErrorCodePosition);
+                if (LastError != 0)
+                    throw new Exception(string.Format("PLC return error code: 0x{0:X4} ({0})", LastError));
+            }
+            else throw new Exception(string.Format("PLC returned buffer is too small: {0}", outBuff.Length));
+            return outBuff;
+
         }
 
         public override string ToString()
