@@ -115,7 +115,7 @@ namespace System.Net.Melsec
 
         public override string ToString()
         {
-            return string.Format("{0}:{1} 0x{2:X2}:0x{3:X2}", Ip, Port, NetworkNo, StationNo);
+            return string.Format("{0}:{1} 0x{2:X2}:0x{3:X2}:0x{4:X2}", Ip, Port, NetworkNo, StationNo, DestinationCpu);
         }
     }
 }
