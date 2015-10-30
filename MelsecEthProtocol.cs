@@ -121,17 +121,20 @@ namespace System.Net.Melsec
                         byte[] header = new byte[ErrorCodePosition];
                         int n = 0;
                         n = stream.Read(header, 0, header.Length);
-                        lst.AddRange(header);
-                        short lenght = BitConverter.ToInt16(header, ErrorCodePosition - 2);
-                        byte[] buff = new byte[lenght];
-                        do
+                        if (n == ErrorCodePosition)
                         {
-                            n = stream.Read(buff, 0, buff.Length);
-                            for (int i = 0; i < n; ++i)
-                                lst.Add(buff[i]);
+                            lst.AddRange(header);
+                            short lenght = BitConverter.ToInt16(header, ErrorCodePosition - 2);
+                            byte[] buff = new byte[lenght];
+                            do
+                            {
+                                n = stream.Read(buff, 0, buff.Length);
+                                for (int i = 0; i < n; ++i)
+                                    lst.Add(buff[i]);
+                            }
+                            while (stream.DataAvailable);
+                            outBuff = lst.ToArray();
                         }
-                        while (stream.DataAvailable);
-                        outBuff = lst.ToArray();
                     }
                     stream.Close();
                     tc.Close();
