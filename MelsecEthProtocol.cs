@@ -5,7 +5,7 @@ using System.Text;
 
 namespace System.Net.Melsec
 {
-    public abstract class MelsecEthProtocol : MelsecProtocol
+    public abstract class MelsecEthProtocol : MelsecProtocol, IDisposable
     {
         private IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5000);
         private readonly int ErrorCodePosition;
@@ -157,6 +157,31 @@ namespace System.Net.Melsec
         public override string ToString()
         {
             return string.Format("{0}:{1} 0x{2:X2}:0x{3:X2}:0x{4:X2}", Ip, Port, NetworkNo, StationNo, DestinationCpu);
+        }
+
+        private bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    //component.Dispose();
+                }
+                disposed = true;
+            }
+        }
+
+        ~MelsecEthProtocol()
+        {
+            Dispose(false);
         }
     }
 }
