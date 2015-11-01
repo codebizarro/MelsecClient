@@ -107,8 +107,8 @@ namespace System.Net.Melsec
                 }
                 channel.SendTimeout = SendTimeout;
                 channel.ReceiveTimeout = ReceiveTimeout;
-                outBuff = channel.Execute(buffer);
             }
+            outBuff = channel.Execute(buffer);
             if (outBuff.Length > MinResponseLength)
             {
                 if (outBuff[0] != ReturnPacketHeader)
@@ -120,7 +120,6 @@ namespace System.Net.Melsec
             }
             else throw new Exception(string.Format("PLC returned buffer is too small: {0}", outBuff.Length));
             return outBuff;
-
         }
 
         public override string ToString()
@@ -143,6 +142,7 @@ namespace System.Net.Melsec
                 if (disposing)
                 {
                     //component.Dispose();
+                    channel.Dispose();
                 }
                 disposed = true;
             }
