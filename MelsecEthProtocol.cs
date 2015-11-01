@@ -15,6 +15,7 @@ namespace System.Net.Melsec
         protected byte NetNo = 0x00;
         protected byte PcNo = 0xFF;
         protected byte destinationCpu = (byte)DestinationCpu.LocalStation;
+        private IChannel channel;
 
         protected MelsecEthProtocol(string ip, ushort port, int errorCodePosition, int minResponseLength, int returnValuePosition, byte returnPacketHeader)
         {
@@ -94,51 +95,19 @@ namespace System.Net.Melsec
         protected override byte[] SendBuffer(byte[] buffer)
         {
             byte[] outBuff = new byte[0];
-            if (!UseTcp)
+            if (channel == null)
             {
-                using (UdpClient uc = new UdpClient())
+                if (!UseTcp)
                 {
-                    uc.Client.SendTimeout = SendTimeout;
-                    uc.Client.ReceiveTimeout = ReceiveTimeout;
-                    uc.Connect(ipep);
-                    uc.Send(buffer, buffer.Length);
-                    outBuff = uc.Receive(ref ipep);
-                    uc.Close();
+                    channel = new UdpChannel(ipep);
                 }
-            }
-            else
-            {
-                using (TcpClient tc = new TcpClient())
+                else
                 {
-                    tc.Client.SendTimeout = SendTimeout;
-                    tc.Client.ReceiveTimeout = ReceiveTimeout;
-                    tc.Connect(ipep);
-                    NetworkStream stream = tc.GetStream();
-                    stream.Write(buffer, 0, buffer.Length);
-                    if (stream.CanRead)
-                    {
-                        System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
-                        byte[] header = new byte[ErrorCodePosition];
-                        int n = 0;
-                        n = stream.Read(header, 0, header.Length);
-                        if (n == ErrorCodePosition)
-                        {
-                            lst.AddRange(header);
-                            short lenght = BitConverter.ToInt16(header, ErrorCodePosition - 2);
-                            byte[] buff = new byte[lenght];
-                            do
-                            {
-                                n = stream.Read(buff, 0, buff.Length);
-                                for (int i = 0; i < n; ++i)
-                                    lst.Add(buff[i]);
-                            }
-                            while (stream.DataAvailable);
-                            outBuff = lst.ToArray();
-                        }
-                    }
-                    stream.Close();
-                    tc.Close();
+                    channel = new TcpChannel(ipep);
                 }
+                channel.SendTimeout = SendTimeout;
+                channel.ReceiveTimeout = ReceiveTimeout;
+                outBuff = channel.Execute(buffer);
             }
             if (outBuff.Length > MinResponseLength)
             {
