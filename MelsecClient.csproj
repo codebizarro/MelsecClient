@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Globals.cs" />
+    <Compile Include="IChannel.cs" />
     <Compile Include="MelsecComClient.cs" />
     <Compile Include="MelsecEthClient.cs" />
     <Compile Include="MelsecGlobals.cs" />
