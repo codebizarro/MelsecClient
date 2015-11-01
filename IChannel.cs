@@ -6,7 +6,7 @@ using System.Text;
 
 namespace System.Net.Melsec
 {
-    public interface IChannel
+    public interface IChannel: IDisposable
     {
         byte[] Execute(byte[] buffer);
 
@@ -23,7 +23,7 @@ namespace System.Net.Melsec
         }
     }
 
-    internal class UdpChannel : IDisposable, IChannel
+    internal class UdpChannel : IChannel
     {
         private UdpClient Client;
         private IPEndPoint EndPoint;
@@ -91,7 +91,7 @@ namespace System.Net.Melsec
         }
     }
 
-    internal class TcpChannel : IDisposable, IChannel
+    internal class TcpChannel : IChannel
     {
         private TcpClient Client;
         private NetworkStream stream;
@@ -109,7 +109,6 @@ namespace System.Net.Melsec
             System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
             if (stream.CanRead)
             {
-                
                 byte[] buff = new byte[1024];
                 int n = 0;
                 do
@@ -119,7 +118,6 @@ namespace System.Net.Melsec
                         lst.Add(buff[i]);
                 }
                 while (stream.DataAvailable);
-                stream.Close();
             }
             return lst.ToArray();
         }
@@ -162,8 +160,9 @@ namespace System.Net.Melsec
             {
                 if (disposing)
                 {
+                    stream.Close();
                     Client.Close();
-                    stream.Dispose();
+                    //stream.Dispose();
                 }
                 disposed = true;
             }
