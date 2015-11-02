@@ -104,11 +104,11 @@ namespace System.Net.Melsec
         {
             Client = new TcpClient();
             Client.Connect(endpoint);
+            stream = Client.GetStream();
         }
 
         public byte[] Execute(byte[] buffer)
         {
-            stream = Client.GetStream();
             stream.Write(buffer, 0, buffer.Length);
             System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
             if (stream.CanRead)
