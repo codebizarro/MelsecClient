@@ -92,7 +92,8 @@ namespace System.Net.Melsec
             {
                 if (disposing)
                 {
-                    Channel.Dispose();
+                    if (Channel != null)
+                        Channel.Dispose();
                 }
                 disposed = true;
             }

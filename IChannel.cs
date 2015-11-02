@@ -79,7 +79,11 @@ namespace System.Net.Melsec
             {
                 if (disposing)
                 {
-                    Client.Close();
+                    if (Client != null)
+                    {
+                        Client.Close();
+                        Client = null;
+                    }
                 }
                 disposed = true;
             }
@@ -160,9 +164,16 @@ namespace System.Net.Melsec
             {
                 if (disposing)
                 {
-                    stream.Close();
-                    Client.Close();
-                    //stream.Dispose();
+                    if (stream != null)
+                    {
+                        stream.Close();
+                        stream = null;
+                    }
+                    if (Client != null)
+                    {
+                        Client.Close();
+                        Client = null;
+                    }
                 }
                 disposed = true;
             }
