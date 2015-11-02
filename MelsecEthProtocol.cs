@@ -40,6 +40,8 @@ namespace System.Net.Melsec
 
         public bool UseTcp { get; set; }
 
+        public bool KeepConnection { get; set; }
+
         public abstract void ErrLedOff();
 
         protected override byte[] SendBuffer(byte[] buffer)
@@ -59,6 +61,11 @@ namespace System.Net.Melsec
                 Channel.ReceiveTimeout = ReceiveTimeout;
             }
             outBuff = Channel.Execute(buffer);
+            if (!KeepConnection)
+            {
+                Channel.Dispose();
+                Channel = null;
+            }
             if (outBuff.Length > MinResponseLength)
             {
                 if (outBuff[0] != ReturnPacketHeader)
