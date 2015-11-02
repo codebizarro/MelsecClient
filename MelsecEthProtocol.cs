@@ -7,7 +7,7 @@ namespace System.Net.Melsec
 {
     public abstract class MelsecEthProtocol : MelsecProtocol, IDisposable
     {
-        private IPEndPoint ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5000);
+        private IPEndPoint EndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5000);
         private readonly int ErrorCodePosition;
         private readonly int MinResponseLength;
         protected readonly int ReturnValuePosition;
@@ -15,65 +15,15 @@ namespace System.Net.Melsec
         protected byte NetNo = 0x00;
         protected byte PcNo = 0xFF;
         protected byte destinationCpu = (byte)DestinationCpu.LocalStation;
-        private IChannel channel;
+        private IChannel Channel;
 
         protected MelsecEthProtocol(string ip, ushort port, int errorCodePosition, int minResponseLength, int returnValuePosition, byte returnPacketHeader)
         {
-            ipep = new IPEndPoint(IPAddress.Parse(ip), port);
+            EndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             ErrorCodePosition = errorCodePosition;
             MinResponseLength = minResponseLength;
             ReturnValuePosition = returnValuePosition;
             ReturnPacketHeader = returnPacketHeader;
-        }
-
-        public string Ip
-        {
-            get
-            {
-                return ipep.Address.ToString();
-            }
-            set
-            {
-                ipep.Address = IPAddress.Parse(value);
-            }
-        }
-
-        public ushort Port
-        {
-            get
-            {
-                return (ushort)ipep.Port;
-            }
-            set
-            {
-                if (value > 0)
-                    ipep.Port = value;
-                else throw new Exception("Port number must be greater than zero");
-            }
-        }
-
-        public byte NetworkNo
-        {
-            get
-            {
-                return NetNo;
-            }
-            set
-            {
-                NetNo = value;
-            }
-        }
-
-        public byte StationNo
-        {
-            get
-            {
-                return PcNo;
-            }
-            set
-            {
-                PcNo = value;
-            }
         }
 
         public DestinationCpu DestinationCpu
@@ -95,20 +45,20 @@ namespace System.Net.Melsec
         protected override byte[] SendBuffer(byte[] buffer)
         {
             byte[] outBuff = new byte[0];
-            if (channel == null)
+            if (Channel == null)
             {
                 if (!UseTcp)
                 {
-                    channel = new UdpChannel(ipep);
+                    Channel = new UdpChannel(EndPoint);
                 }
                 else
                 {
-                    channel = new TcpChannel(ipep);
+                    Channel = new TcpChannel(EndPoint);
                 }
-                channel.SendTimeout = SendTimeout;
-                channel.ReceiveTimeout = ReceiveTimeout;
+                Channel.SendTimeout = SendTimeout;
+                Channel.ReceiveTimeout = ReceiveTimeout;
             }
-            outBuff = channel.Execute(buffer);
+            outBuff = Channel.Execute(buffer);
             if (outBuff.Length > MinResponseLength)
             {
                 if (outBuff[0] != ReturnPacketHeader)
@@ -124,7 +74,8 @@ namespace System.Net.Melsec
 
         public override string ToString()
         {
-            return string.Format("{0}:{1} 0x{2:X2}:0x{3:X2}:0x{4:X2}", Ip, Port, NetworkNo, StationNo, DestinationCpu);
+            return string.Format("{0}:{1} 0x{2:X2}:0x{3:X2}:0x{4:X2}",
+                EndPoint.Address, EndPoint.Port, NetNo, PcNo, DestinationCpu);
         }
 
         private bool disposed = false;
@@ -141,8 +92,7 @@ namespace System.Net.Melsec
             {
                 if (disposing)
                 {
-                    //component.Dispose();
-                    channel.Dispose();
+                    Channel.Dispose();
                 }
                 disposed = true;
             }
