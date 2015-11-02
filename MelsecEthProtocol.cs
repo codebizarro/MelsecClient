@@ -12,18 +12,20 @@ namespace System.Net.Melsec
         private readonly int MinResponseLength;
         protected readonly int ReturnValuePosition;
         private readonly byte ReturnPacketHeader;
+        private readonly byte DataLengthPosition;
         protected byte NetNo = 0x00;
         protected byte PcNo = 0xFF;
         protected byte destinationCpu = (byte)DestinationCpu.LocalStation;
         private IChannel Channel;
 
-        protected MelsecEthProtocol(string ip, ushort port, int errorCodePosition, int minResponseLength, int returnValuePosition, byte returnPacketHeader)
+        protected MelsecEthProtocol(string ip, ushort port, int errorCodePosition, int minResponseLength, int returnValuePosition, byte returnPacketHeader, byte dataLengthPosition)
         {
             EndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             ErrorCodePosition = errorCodePosition;
             MinResponseLength = minResponseLength;
             ReturnValuePosition = returnValuePosition;
             ReturnPacketHeader = returnPacketHeader;
+            DataLengthPosition = dataLengthPosition;
         }
 
         public DestinationCpu DestinationCpu
@@ -74,6 +76,9 @@ namespace System.Net.Melsec
                 LastError = BitConverter.ToUInt16(outBuff, ErrorCodePosition);
                 if (LastError != 0)
                     throw new Exception(string.Format("PLC return error code: 0x{0:X4} ({0})", LastError));
+                int lenght = BitConverter.ToInt16(outBuff, DataLengthPosition) + ErrorCodePosition;
+                if(lenght != outBuff.Length)
+                    throw new Exception("PLC returned buffer is corrupt");
             }
             else throw new Exception(string.Format("PLC returned buffer is too small: {0}", outBuff.Length));
             return outBuff;
