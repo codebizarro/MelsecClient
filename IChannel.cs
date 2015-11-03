@@ -97,19 +97,23 @@ namespace System.Net.Melsec
 
     internal class TcpChannel : IChannel
     {
-        private TcpClient Client;
+        private Socket Client;
         private NetworkStream stream;
 
         public TcpChannel(IPEndPoint endpoint)
         {
-            Client = new TcpClient();
+            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, Sockets.ProtocolType.Tcp);
             Client.Connect(endpoint);
-            stream = Client.GetStream();
+            stream = new NetworkStream(Client);
         }
 
         public byte[] Execute(byte[] buffer)
         {
-            stream.Write(buffer, 0, buffer.Length);
+            if (stream.CanWrite)
+            {
+                stream.Write(buffer, 0, buffer.Length);
+                stream.Flush();
+            }
             System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
             if (stream.CanRead)
             {
@@ -130,11 +134,11 @@ namespace System.Net.Melsec
         {
             get
             {
-                return Client.Client.SendTimeout;
+                return Client.SendTimeout;
             }
             set
             {
-                Client.Client.SendTimeout = value;
+                Client.SendTimeout = value;
             }
         }
 
@@ -142,11 +146,11 @@ namespace System.Net.Melsec
         {
             get
             {
-                return Client.Client.ReceiveTimeout;
+                return Client.ReceiveTimeout;
             }
             set
             {
-                Client.Client.ReceiveTimeout = value;
+                Client.ReceiveTimeout = value;
             }
         }
 
@@ -171,6 +175,7 @@ namespace System.Net.Melsec
                     }
                     if (Client != null)
                     {
+                        Client.Shutdown(SocketShutdown.Both);
                         Client.Close();
                         Client = null;
                     }
