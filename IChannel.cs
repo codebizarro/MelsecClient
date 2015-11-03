@@ -6,7 +6,7 @@ using System.Text;
 
 namespace System.Net.Melsec
 {
-    public interface IChannel: IDisposable
+    public interface IChannel : IDisposable
     {
         byte[] Execute(byte[] buffer);
 
@@ -97,31 +97,27 @@ namespace System.Net.Melsec
 
     internal class TcpChannel : IChannel
     {
-        private TcpClient Client;
-        private NetworkStream stream;
+        private Socket Client;
 
         public TcpChannel(IPEndPoint endpoint)
         {
-            Client = new TcpClient();
+            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, Sockets.ProtocolType.Tcp);
+            //Client.LingerState = new LingerOption(true, 0);
+            //Client.NoDelay = true;
+            //Client.Blocking = true;
             Client.Connect(endpoint);
-            stream = Client.GetStream();
         }
 
         public byte[] Execute(byte[] buffer)
         {
-            stream.Write(buffer, 0, buffer.Length);
+            Client.Send(buffer, 0, buffer.Length, SocketFlags.None);
+            System.Threading.Thread.Sleep(100);
             System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
-            if (stream.CanRead)
             {
-                byte[] buff = new byte[1024];
+                byte[] buff = new byte[Client.Available];
                 int n = 0;
-                do
-                {
-                    n = stream.Read(buff, 0, buff.Length);
-                    for (int i = 0; i < n; ++i)
-                        lst.Add(buff[i]);
-                }
-                while (stream.DataAvailable);
+                n = Client.Receive(buff, 0, Client.Available, SocketFlags.None);
+                lst.AddRange(buff);
             }
             return lst.ToArray();
         }
@@ -130,11 +126,11 @@ namespace System.Net.Melsec
         {
             get
             {
-                return Client.Client.SendTimeout;
+                return Client.SendTimeout;
             }
             set
             {
-                Client.Client.SendTimeout = value;
+                Client.SendTimeout = value;
             }
         }
 
@@ -142,11 +138,11 @@ namespace System.Net.Melsec
         {
             get
             {
-                return Client.Client.ReceiveTimeout;
+                return Client.ReceiveTimeout;
             }
             set
             {
-                Client.Client.ReceiveTimeout = value;
+                Client.ReceiveTimeout = value;
             }
         }
 
@@ -164,13 +160,9 @@ namespace System.Net.Melsec
             {
                 if (disposing)
                 {
-                    if (stream != null)
-                    {
-                        stream.Close();
-                        stream = null;
-                    }
                     if (Client != null)
                     {
+                        Client.Shutdown(SocketShutdown.Both);
                         Client.Close();
                         Client = null;
                     }
