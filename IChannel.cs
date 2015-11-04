@@ -6,7 +6,7 @@ using System.Text;
 
 namespace System.Net.Melsec
 {
-    public interface IChannel: IDisposable
+    public interface IChannel : IDisposable
     {
         byte[] Execute(byte[] buffer);
 
@@ -105,6 +105,7 @@ namespace System.Net.Melsec
             Client = new TcpClient();
             Client.Connect(endpoint);
             stream = Client.GetStream();
+            if (!stream.CanWrite) throw new Exception("Stream don't ready to write");
         }
 
         public byte[] Execute(byte[] buffer)
