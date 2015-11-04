@@ -28,6 +28,34 @@ namespace System.Net.Melsec
             DataLengthPosition = dataLengthPosition;
         }
 
+        public string Ip
+        {
+            get
+            {
+                return EndPoint.Address.ToString();
+            }
+            set
+            {
+                CloseChannel();
+                EndPoint.Address = IPAddress.Parse(value);
+            }
+        }
+
+        public ushort Port
+        {
+            get
+            {
+                return (ushort)EndPoint.Port;
+            }
+            set
+            {
+                CloseChannel();
+                if (value > 0)
+                    EndPoint.Port = value;
+                else throw new Exception("Port number must be greater than zero");
+            }
+        }
+
         public DestinationCpu DestinationCpu
         {
             get
@@ -40,15 +68,27 @@ namespace System.Net.Melsec
             }
         }
 
-        public bool UseTcp { get; set; }
+        private bool useTcp;
+
+        public bool UseTcp
+        {
+            get
+            {
+                return useTcp;
+            }
+            set
+            {
+                useTcp = value;
+                CloseChannel();
+            }
+        }
 
         public bool KeepConnection { get; set; }
 
         public abstract void ErrLedOff();
 
-        protected override byte[] SendBuffer(byte[] buffer)
+        private void InitChannel()
         {
-            byte[] outBuff = new byte[0];
             if (Channel == null)
             {
                 if (!UseTcp)
@@ -62,12 +102,24 @@ namespace System.Net.Melsec
                 Channel.SendTimeout = SendTimeout;
                 Channel.ReceiveTimeout = ReceiveTimeout;
             }
-            outBuff = Channel.Execute(buffer);
-            if (!KeepConnection)
+        }
+
+        private void CloseChannel()
+        {
+            if (Channel != null)
             {
                 Channel.Dispose();
                 Channel = null;
             }
+        }
+
+        protected override byte[] SendBuffer(byte[] buffer)
+        {
+            byte[] outBuff = new byte[0];
+            InitChannel();
+            outBuff = Channel.Execute(buffer);
+            if (!KeepConnection)
+                CloseChannel();
             if (outBuff.Length > MinResponseLength)
             {
                 if (outBuff[0] != ReturnPacketHeader)
@@ -77,7 +129,7 @@ namespace System.Net.Melsec
                 if (LastError != 0)
                     throw new Exception(string.Format("PLC return error code: 0x{0:X4} ({0})", LastError));
                 int lenght = BitConverter.ToInt16(outBuff, DataLengthPosition) + ErrorCodePosition;
-                if(lenght != outBuff.Length)
+                if (lenght != outBuff.Length)
                     throw new Exception("PLC returned buffer is corrupt");
             }
             else throw new Exception(string.Format("PLC returned buffer is too small: {0}", outBuff.Length));
