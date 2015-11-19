@@ -63,7 +63,7 @@ namespace System.Net.Melsec
             return GetBytes(val, 2);
         }
 
-        private byte[] GetBytes(int val, byte cnt)
+        protected byte[] GetBytes(int val, byte cnt)
         {
             byte[] tmp = BitConverter.GetBytes(val);
             if (tmp.Length < cnt)
@@ -140,5 +140,8 @@ namespace System.Net.Melsec
 
         public abstract string ReadCPUModelName();
 
+        //public abstract ushort[] ReadBuffer(ushort point, MelsecDeviceType DeviceType, byte count);
+
+        public abstract byte[] ReadIntelliBuffer(ushort module, int address, int count);
     }
 }
