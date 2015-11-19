@@ -143,5 +143,7 @@ namespace System.Net.Melsec
         //public abstract ushort[] ReadBuffer(ushort point, MelsecDeviceType DeviceType, byte count);
 
         public abstract byte[] ReadIntelliBuffer(ushort module, int address, int count);
+
+        public abstract void WriteIntelliBuffer(ushort module, int address, byte[] val);
     }
 }
