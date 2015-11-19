@@ -594,10 +594,10 @@ namespace System.Net.Melsec
             return ret;
         }
 
-        public override byte[] ReadIntelliBuffer(ushort module, int address, int count)
+        public override byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, int count)
         {
             byte[] mod = GetBytes(module, 2);
-            byte[] addr = GetBytes(address, 4);
+            byte[] addr = GetBytes(headAddress + address * 2, 4);
             byte[] cnt = GetPointCount(count);
             byte[] sendbuffer = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
                 NetNo,PcNo,destinationCpu,0x03,0x00,0x0E,0x00,0x10,0x00,
@@ -613,12 +613,12 @@ namespace System.Net.Melsec
             return ret;
         }
 
-        public override void WriteIntelliBuffer(ushort module, int address, byte[] val)
+        public override void WriteIntelliBuffer(ushort module, int headAddress, int address, byte[] val)
         {
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
             byte[] mod = GetBytes(module, 2);
-            byte[] addr = GetBytes(address, 4);
+            byte[] addr = GetBytes(headAddress + address * 2, 4);
             ushort count = (ushort)val.Length;
             byte[] cnt = GetPointCount(count);
             byte[] sendbuffer = new byte[27 + val.Length];
