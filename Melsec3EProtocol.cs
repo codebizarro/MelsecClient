@@ -542,5 +542,23 @@ namespace System.Net.Melsec
             string ret = System.Text.Encoding.UTF8.GetString(name);
             return ret;
         }
+
+        public override byte[] ReadIntelliBuffer(ushort module, int address, int count)
+        {
+            byte[] mod = GetBytes(module, 2);
+            byte[] addr = GetBytes(address, 4);
+            byte[] cnt = GetPointCount(count);
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x0E,0x00,0x10,0x00,
+                0x01,0x06,0x00,0x00,
+                addr[0],addr[1],addr[2],addr[3],
+                cnt[0],cnt[1],
+                mod[0],mod[1]};
+            byte[] recvbuffer = SendBuffer(sendbuffer);
+            int dataLen = recvbuffer.Length - ReturnValuePosition;
+            int retLen = dataLen;
+            byte[] ret = new byte[retLen];
+            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
+            return ret;
+        }
     }
 }
