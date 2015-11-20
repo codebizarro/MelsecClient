@@ -140,7 +140,7 @@ namespace System.Net.Melsec
 
         public abstract string ReadCPUModelName();
 
-        //public abstract ushort[] ReadBuffer(ushort point, MelsecDeviceType DeviceType, byte count);
+        public abstract ushort[] ReadBuffer(int headAddress, int count);
 
         public abstract byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, int count);
 
