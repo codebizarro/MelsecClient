@@ -140,11 +140,11 @@ namespace System.Net.Melsec
 
         public abstract string ReadCPUModelName();
 
-        public abstract byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, int count);
+        public abstract byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, byte count);
 
         public abstract void WriteIntelliBuffer(ushort module, int headAddress, int address, byte[] val);
 
-        public abstract ushort[] ReadBuffer(int address, int count);
+        public abstract ushort[] ReadBuffer(int address, byte count);
 
         public abstract void WriteBuffer(int address, ushort[] val);
     }

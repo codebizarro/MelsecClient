@@ -594,7 +594,7 @@ namespace System.Net.Melsec
             return ret;
         }
 
-        public override byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, int count)
+        public override byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, byte count)
         {
             byte[] mod = GetBytes(module, 2);
             byte[] addr = GetBytes(headAddress + address * 2, 4);
@@ -631,7 +631,7 @@ namespace System.Net.Melsec
             SendBuffer(sendbuffer);
         }
 
-        public override ushort[] ReadBuffer(int address, int count)
+        public override ushort[] ReadBuffer(int address, byte count)
         {
             byte[] addr = GetBytes(address, 4);
             byte[] cnt = GetPointCount(count);
