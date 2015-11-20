@@ -647,5 +647,27 @@ namespace System.Net.Melsec
             Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
             return ret;
         }
+
+        public override void WriteBuffer(int address, ushort[] val)
+        {
+            if (val.Length == 0)
+                throw new Exception(Globals.NO_DATA_WRITE);
+            byte[] addr = GetBytes(address, 4);
+            ushort count = (ushort)val.Length;
+            byte[] cnt = GetPointCount(count);
+            byte[] sendbuffer = new byte[25 + count * 2];
+            byte[] len = GetRequestDataLength(sendbuffer.Length - ERROR_CODE_POSITION);
+            byte[] buff1 = new byte[] {0x54,0x00,SerialNo[0],SerialNo[1],0x00,0x00,
+                NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+                0x13,0x16,0x00,0x00,addr[0],addr[1],addr[2],addr[3],cnt[0],cnt[1]};
+            Array.Copy(buff1, sendbuffer, buff1.Length);
+            for (int i = 0; i < count; ++i)
+            {
+                byte[] wval = BitConverter.GetBytes(val[i]);
+                byte[] buff2 = new byte[] { wval[0], wval[1] };
+                Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
+            }
+            SendBuffer(sendbuffer);
+        }
     }
 }
