@@ -21,5 +21,11 @@ namespace System.Net.Melsec
         {
             return Protocol.ToString();
         }
+
+        public bool ErrLed()
+        {
+            ushort[] buff = Protocol.ReadBuffer(0xC8, 1);
+            return ((buff[0] & (1 << 4)) != 0);
+        }
     }
 }
