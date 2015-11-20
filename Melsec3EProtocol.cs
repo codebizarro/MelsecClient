@@ -577,5 +577,21 @@ namespace System.Net.Melsec
             Array.Copy(val, 0, sendbuffer, buff1.Length, val.Length);
             SendBuffer(sendbuffer);
         }
+
+        public override ushort[] ReadBuffer(int address, int count)
+        {
+            byte[] addr = GetBytes(address, 4);
+            byte[] cnt = GetPointCount(count);
+            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
+                0x13,0x06,0x00,0x00,
+                addr[0],addr[1],addr[2],addr[3],
+                cnt[0],cnt[1]};
+            byte[] recvbuffer = SendBuffer(sendbuffer);
+            int dataLen = recvbuffer.Length - ReturnValuePosition;
+            int retLen = dataLen / 2;
+            ushort[] ret = new ushort[retLen];
+            Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
+            return ret;
+        }
     }
 }
