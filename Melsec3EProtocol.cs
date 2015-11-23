@@ -17,15 +17,7 @@ namespace System.Net.Melsec
 
         public override float ReadReal(ushort point, MelsecDeviceType DeviceType)
         {
-            byte[] addr = GetPointBytes(point);
-            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
-                0x01,0x04,0x00,0x00,
-                addr[0],addr[1],addr[2],
-                (byte)DeviceType,
-                0x02,0x00};
-            byte[] recvbuffer = SendBuffer(sendbuffer);
-            float ret = BitConverter.ToSingle(recvbuffer, ReturnValuePosition);
-            return ret;
+            return ReadReal(point, DeviceType, 1)[0];
         }
 
         public override float[] ReadReal(ushort point, MelsecDeviceType DeviceType, byte count)
@@ -71,15 +63,7 @@ namespace System.Net.Melsec
 
         public override void WriteReal(ushort point, float val, MelsecDeviceType DeviceType)
         {
-            byte[] addr = GetPointBytes(point);
-            byte[] rVal = BitConverter.GetBytes(val);
-            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x10,0x00,0x10,0x00,
-                0x01,0x14,0x00,0x00,
-                addr[0],addr[1],addr[2],
-                (byte)DeviceType,
-                0x02,0x00,
-                rVal[0], rVal[1], rVal[2], rVal[3]};
-            SendBuffer(sendbuffer);
+            WriteReal(point, new float[] { val }, DeviceType);
         }
 
         public override void WriteReal(ushort point, float[] val, MelsecDeviceType DeviceType)
@@ -96,8 +80,7 @@ namespace System.Net.Melsec
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
             {
-                byte[] rval = BitConverter.GetBytes(val[i]);
-                byte[] buff2 = new byte[] { rval[0], rval[1], rval[2], rval[3] };
+                byte[] buff2 = BitConverter.GetBytes(val[i]);
                 Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
             }
             SendBuffer(sendbuffer);
@@ -128,15 +111,7 @@ namespace System.Net.Melsec
 
         public override uint ReadDword(ushort point, MelsecDeviceType DeviceType)
         {
-            byte[] addr = GetPointBytes(point);
-            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
-                0x01,0x04,0x00,0x00,
-                addr[0],addr[1],addr[2],
-                (byte)DeviceType,
-                0x02,0x00};
-            byte[] recvbuffer = SendBuffer(sendbuffer);
-            uint ret = BitConverter.ToUInt32(recvbuffer, ReturnValuePosition);
-            return ret;
+            return ReadDword(point, DeviceType, 1)[0];
         }
 
         public override uint[] ReadDword(ushort point, MelsecDeviceType DeviceType, byte count)
@@ -182,15 +157,7 @@ namespace System.Net.Melsec
 
         public override void WriteDword(ushort point, uint val, MelsecDeviceType DeviceType)
         {
-            byte[] addr = GetPointBytes(point);
-            byte[] dwVal = BitConverter.GetBytes(val);
-            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x10,0x00,0x10,0x00,
-                0x01,0x14,0x00,0x00,
-                addr[0],addr[1],addr[2],
-                (byte)DeviceType,
-                0x02,0x00,
-                dwVal[0], dwVal[1], dwVal[2], dwVal[3]};
-            SendBuffer(sendbuffer);
+            WriteDword(point, new uint[] { val }, DeviceType);
         }
 
         public override void WriteDword(ushort point, uint[] val, MelsecDeviceType DeviceType)
@@ -207,8 +174,7 @@ namespace System.Net.Melsec
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
             {
-                byte[] rval = BitConverter.GetBytes(val[i]);
-                byte[] buff2 = new byte[] { rval[0], rval[1], rval[2], rval[3] };
+                byte[] buff2 = BitConverter.GetBytes(val[i]);
                 Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
             }
             SendBuffer(sendbuffer);
@@ -239,15 +205,7 @@ namespace System.Net.Melsec
 
         public override ushort ReadWord(ushort point, MelsecDeviceType DeviceType)
         {
-            byte[] addr = GetPointBytes(point);
-            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
-                0x01,0x04,0x00,0x00,
-                addr[0],addr[1],addr[2],
-                (byte)DeviceType,
-                0x01,0x00};
-            byte[] recvbuffer = SendBuffer(sendbuffer);
-            ushort ret = BitConverter.ToUInt16(recvbuffer, ReturnValuePosition);
-            return ret;
+            return ReadWord(point, DeviceType, 1)[0];
         }
 
         public override ushort[] ReadWord(ushort point, MelsecDeviceType DeviceType, byte count)
@@ -293,15 +251,7 @@ namespace System.Net.Melsec
 
         public override void WriteWord(ushort point, ushort val, MelsecDeviceType DeviceType)
         {
-            byte[] addr = GetPointBytes(point);
-            byte[] wVal = BitConverter.GetBytes(val);
-            byte[] sendbuffer = new byte[] {0x50,0x00,NetNo,PcNo,destinationCpu,0x03,0x00,0x0E,0x00,0x10,0x00,
-                0x01,0x14,0x00,0x00,
-                addr[0],addr[1],addr[2],
-                (byte)DeviceType,
-                0x01,0x00,
-                wVal[0], wVal[1]};
-            SendBuffer(sendbuffer);
+            WriteWord(point, new ushort[] { val }, DeviceType);
         }
 
         public override void WriteWord(ushort point, ushort[] val, MelsecDeviceType DeviceType)
@@ -318,8 +268,7 @@ namespace System.Net.Melsec
             Array.Copy(buff1, sendbuffer, buff1.Length);
             for (int i = 0; i < count; ++i)
             {
-                byte[] wval = BitConverter.GetBytes(val[i]);
-                byte[] buff2 = new byte[] { wval[0], wval[1] };
+                byte[] buff2 = BitConverter.GetBytes(val[i]);
                 Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
             }
             SendBuffer(sendbuffer);
