@@ -147,5 +147,13 @@ namespace System.Net.Melsec
         public abstract ushort[] ReadBuffer(int address, byte count);
 
         public abstract void WriteBuffer(int address, ushort[] val);
+
+        public abstract T[] BatchReadWord<T>(ushort point, MelsecDeviceType DeviceType, ushort count);
+
+        public abstract void BatchWriteWord<T>(ushort point, T[] val, MelsecDeviceType DeviceType);
+
+        public abstract T[] RandomReadWord<T>(ushort[] point, MelsecDeviceType DeviceType);
+
+        public abstract void RandomWriteWord<T>(ushort[] point, T[] val, MelsecDeviceType DeviceType);
     }
 }
