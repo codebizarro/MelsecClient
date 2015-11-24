@@ -93,8 +93,6 @@ namespace System.Net.Melsec
 
         public bool KeepConnection { get; set; }
 
-        public abstract void ErrLedOff();
-
         private void InitChannel()
         {
             if (Channel == null)
@@ -575,6 +573,72 @@ namespace System.Net.Melsec
                 byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType, bval[0] };
                 Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
             }
+            SendBuffer(sendbuffer);
+        }
+
+        public void ErrLedOff()
+        {
+            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x06,0x00,0x10,0x00,
+                0x17,0x16,
+                0x00,0x00};
+            sendbuffer = Concat(PacketHead, sendbuffer);
+            SendBuffer(sendbuffer);
+        }
+
+        public override void Run(bool forced, ClearMode mode)
+        {
+            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
+            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0A,0x00,0x10,0x00,
+                0x01,0x10,
+                0x00,0x00,
+                frcd,0x00,
+                (byte)mode, 0x00};
+            sendbuffer = Concat(PacketHead, sendbuffer);
+            SendBuffer(sendbuffer);
+        }
+
+        public override void Pause(bool forced)
+        {
+            byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
+            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+                0x03,0x10,
+                0x00,0x00,
+                frcd,0x00};
+            sendbuffer = Concat(PacketHead, sendbuffer);
+            SendBuffer(sendbuffer);
+        }
+
+        public override void Stop()
+        {
+            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+                0x02,0x10,
+                0x00,0x00,
+                0x01,0x00};
+            sendbuffer = Concat(PacketHead, sendbuffer);
+            SendBuffer(sendbuffer);
+        }
+
+        public override void Reset()
+        {
+            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+                0x06,0x10,
+                0x00,0x00,
+                0x01,0x00};
+            sendbuffer = Concat(PacketHead, sendbuffer);
+            try
+            {
+                SendBuffer(sendbuffer);
+            }
+            catch { }
+        }
+
+        public override void LatchClear()
+        {
+            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+                0x05,0x10,
+                0x00,0x00,
+                0x01,0x00};
+            sendbuffer = Concat(PacketHead, sendbuffer);
             SendBuffer(sendbuffer);
         }
     }
