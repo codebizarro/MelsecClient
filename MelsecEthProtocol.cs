@@ -189,7 +189,7 @@ namespace System.Net.Melsec
             Array.Copy(buff1, 0, sendbuffer, PacketHead.Length, buff1.Length);
             byte[] recvbuffer = SendBuffer(sendbuffer);
             int dataLen = recvbuffer.Length - ReturnValuePosition;
-            int retLen = dataLen / System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+            int retLen = dataLen / typeSize;
             T[] ret = new T[retLen];
             Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
             return ret;
@@ -240,7 +240,7 @@ namespace System.Net.Melsec
             }
             byte[] recvbuffer = SendBuffer(sendbuffer);
             int dataLen = recvbuffer.Length - ReturnValuePosition;
-            int retLen = dataLen / System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+            int retLen = dataLen / typeSize;
             T[] ret = new T[retLen];
             Buffer.BlockCopy(recvbuffer, ReturnValuePosition, ret, 0, dataLen);
             return ret;
