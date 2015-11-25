@@ -78,9 +78,9 @@ namespace System.Net.Melsec
             return ret;
         }
 
-        protected byte[] Concat(byte[] array1, byte[] array2)
+        protected T[] Concat<T>(T[] array1, T[] array2)
         {
-            byte[] ret = new byte[array1.Length + array2.Length];
+            T[] ret = new T[array1.Length + array2.Length];
             array1.CopyTo(ret, 0);
             array2.CopyTo(ret, array1.Length);
             return ret;
