@@ -174,11 +174,17 @@ namespace System.Net.Melsec
             Dispose(false);
         }
 
-        public override T[] BatchReadWord<T>(ushort point, MelsecDeviceType DeviceType, ushort count)
+        private int CheckTypeSize<T>(T type)
         {
             int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
             if (typeSize < 2 || typeSize > 4)
                 throw new Exception(Globals.WRONG_TYPE_SIZE);
+            return typeSize;
+        }
+
+        public override T[] BatchReadWord<T>(ushort point, MelsecDeviceType DeviceType, ushort count)
+        {
+            int typeSize = CheckTypeSize(typeof(T));
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count * typeSize / 2);
             byte[] sendbuffer = new byte[19 + PacketHead.Length];
@@ -199,9 +205,7 @@ namespace System.Net.Melsec
 
         public override void BatchWriteWord<T>(ushort point, T[] val, MelsecDeviceType DeviceType)
         {
-            int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
-            if (typeSize < 2 || typeSize > 4)
-                throw new Exception(Globals.WRONG_TYPE_SIZE);
+            int typeSize = CheckTypeSize(typeof(T));
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
             byte[] addr = GetPointBytes(point);
@@ -220,9 +224,7 @@ namespace System.Net.Melsec
 
         public override T[] RandomReadWord<T>(ushort[] point, MelsecDeviceType DeviceType)
         {
-            int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
-            if (typeSize < 2 || typeSize > 4)
-                throw new Exception(Globals.WRONG_TYPE_SIZE);
+            int typeSize = CheckTypeSize(typeof(T));
             if (point.Length == 0)
                 throw new Exception(Globals.NO_DATA_READ);
             ushort count = (ushort)(point.Length);
@@ -254,9 +256,7 @@ namespace System.Net.Melsec
 
         public override void RandomWriteWord<T>(ushort[] point, T[] val, MelsecDeviceType DeviceType)
         {
-            int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
-            if (typeSize < 2 || typeSize > 4)
-                throw new Exception(Globals.WRONG_TYPE_SIZE);
+            int typeSize = CheckTypeSize(typeof(T));
             if (point.Length != val.Length)
                 throw new Exception(Globals.SIZE_MISMATCH);
             if (val.Length == 0)
