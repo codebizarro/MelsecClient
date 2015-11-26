@@ -543,7 +543,7 @@ namespace System.Net.Melsec
             else
             {
                 ushort count = (ushort)state.Length;
-                if (count % 2 != 0)
+                if ((count & 1) != 0)
                 {
                     throw new Exception(Globals.ODD_SIZE_ARRAY);
                 }
