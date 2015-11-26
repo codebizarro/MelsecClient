@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections.Generic;
 
 namespace System.Net.Melsec
 {
@@ -185,17 +186,17 @@ namespace System.Net.Melsec
         public override T[] BatchReadWord<T>(ushort point, MelsecDeviceType DeviceType, ushort count)
         {
             int typeSize = CheckTypeSize<T>();
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count * typeSize / 2);
-            byte[] sendbuffer = new byte[19 + PacketHead.Length];
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x01,0x04,0x00,0x00,
                 addr[0],addr[1],addr[2],
                 (byte)DeviceType,
                 cnt[0],cnt[1]};
-            Array.Copy(PacketHead, sendbuffer, PacketHead.Length);
-            Array.Copy(buff1, 0, sendbuffer, PacketHead.Length, buff1.Length);
-            byte[] recvbuffer = SendBuffer(sendbuffer);
+            packet.AddRange(buff1);
+            byte[] recvbuffer = SendBuffer(packet.ToArray());
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / typeSize;
             T[] ret = new T[retLen];
@@ -239,7 +240,7 @@ namespace System.Net.Melsec
             Array.Copy(PacketHead, sendbuffer, PacketHead.Length);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x03,0x04,0x00,0x00,cnt[0],cnt[1]};
-            Array.Copy(buff1, 0, sendbuffer, PacketHead.Length, buff1.Length);
+            packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
             {
                 byte[] addr = GetPointBytes((ushort)(point[i]));
