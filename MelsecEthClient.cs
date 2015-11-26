@@ -24,7 +24,7 @@ namespace System.Net.Melsec
 
         public bool ErrLed()
         {
-            ushort[] buff = Protocol.ReadBuffer(0xC8, 1);
+            ushort[] buff = Protocol.ReadBuffer<ushort>(0xC8, 1);
             return ((buff[0] & (1 << 4)) != 0);
         }
     }

@@ -148,13 +148,13 @@ namespace System.Net.Melsec
 
         public abstract string ReadCPUModelName();
 
-        public abstract byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, byte count);
+        public abstract T[] ReadIntelliBuffer<T>(ushort module, int headAddress, int address, byte count) where T : IConvertible;
 
-        public abstract void WriteIntelliBuffer(ushort module, int headAddress, int address, byte[] val);
+        public abstract void WriteIntelliBuffer<T>(ushort module, int headAddress, int address, T[] val) where T : IConvertible;
 
-        public abstract ushort[] ReadBuffer(int address, byte count);
+        public abstract T[] ReadBuffer<T>(int address, byte count) where T : IConvertible;
 
-        public abstract void WriteBuffer(int address, ushort[] val);
+        public abstract void WriteBuffer<T>(int address, T[] val) where T : IConvertible;
 
         public abstract T[] BatchReadWord<T>(ushort point, MelsecDeviceType DeviceType, ushort count) where T : IConvertible;
 
