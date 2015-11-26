@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections.Generic;
 
 namespace System.Net.Melsec
 {
@@ -185,17 +186,17 @@ namespace System.Net.Melsec
         public override T[] BatchReadWord<T>(ushort point, MelsecDeviceType DeviceType, ushort count)
         {
             int typeSize = CheckTypeSize<T>();
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count * typeSize / 2);
-            byte[] sendbuffer = new byte[19 + PacketHead.Length];
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x01,0x04,0x00,0x00,
                 addr[0],addr[1],addr[2],
                 (byte)DeviceType,
                 cnt[0],cnt[1]};
-            Array.Copy(PacketHead, sendbuffer, PacketHead.Length);
-            Array.Copy(buff1, 0, sendbuffer, PacketHead.Length, buff1.Length);
-            byte[] recvbuffer = SendBuffer(sendbuffer);
+            packet.AddRange(buff1);
+            byte[] recvbuffer = SendBuffer(packet.ToArray());
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / typeSize;
             T[] ret = new T[retLen];
@@ -208,18 +209,19 @@ namespace System.Net.Melsec
             int typeSize = CheckTypeSize<T>();
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             byte[] addr = GetPointBytes(point);
             ushort count = (ushort)(val.Length * typeSize / 2);
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[19 + PacketHead.Length + count * 2];
-            byte[] len = GetRequestDataLength(sendbuffer.Length - ErrorCodePosition);
-            Array.Copy(PacketHead, sendbuffer, PacketHead.Length);
+            byte[] len = GetRequestDataLength(19 + PacketHead.Length + count * 2 - ErrorCodePosition);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x01,0x14,0x00,0x00,addr[0],addr[1],addr[2],(byte)DeviceType,cnt[0],cnt[1]};
-            Array.Copy(buff1, 0, sendbuffer, PacketHead.Length, buff1.Length);
+            packet.AddRange(buff1);
             byte[] buff2 = new byte[count * 2];
-            Buffer.BlockCopy(val, 0, sendbuffer, buff1.Length + PacketHead.Length, buff2.Length);
-            SendBuffer(sendbuffer);
+            Buffer.BlockCopy(val, 0, buff2, 0, buff2.Length);
+            packet.AddRange(buff2);
+            SendBuffer(packet.ToArray());
         }
 
         public override T[] RandomReadWord<T>(ushort[] point, MelsecDeviceType DeviceType)
@@ -227,26 +229,26 @@ namespace System.Net.Melsec
             int typeSize = CheckTypeSize<T>();
             if (point.Length == 0)
                 throw new Exception(Globals.NO_DATA_READ);
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             ushort count = (ushort)(point.Length);
-            byte[] sendbuffer = new byte[15 + PacketHead.Length + count * 4];
-            byte[] len = GetRequestDataLength(sendbuffer.Length - ErrorCodePosition);
+            byte[] len = GetRequestDataLength(15 + PacketHead.Length + count * 4 - ErrorCodePosition);
             byte[] cnt = GetPointCount(count);
             if (typeSize == 4)
             {
                 cnt[0] = 0;
                 cnt[1] = (byte)count;
             }
-            Array.Copy(PacketHead, sendbuffer, PacketHead.Length);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x03,0x04,0x00,0x00,cnt[0],cnt[1]};
-            Array.Copy(buff1, 0, sendbuffer, PacketHead.Length, buff1.Length);
+            packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
             {
                 byte[] addr = GetPointBytes((ushort)(point[i]));
                 byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType };
-                Array.Copy(buff2, 0, sendbuffer, buff1.Length + PacketHead.Length + i * buff2.Length, buff2.Length);
+                packet.AddRange(buff2);
             }
-            byte[] recvbuffer = SendBuffer(sendbuffer);
+            byte[] recvbuffer = SendBuffer(packet.ToArray());
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / typeSize;
             T[] ret = new T[retLen];
@@ -261,41 +263,43 @@ namespace System.Net.Melsec
                 throw new Exception(Globals.SIZE_MISMATCH);
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             ushort count = (ushort)point.Length;
-            byte[] sendbuffer = new byte[15 + PacketHead.Length + count * (4 + typeSize)];
-            byte[] len = GetRequestDataLength(sendbuffer.Length - ErrorCodePosition);
+            byte[] len = GetRequestDataLength(15 + PacketHead.Length + count * (4 + typeSize) - ErrorCodePosition);
             byte[] cnt = GetPointCount(count);
             if (typeSize == 4)
             {
                 cnt[0] = 0;
                 cnt[1] = (byte)count;
             }
-            Array.Copy(PacketHead, sendbuffer, PacketHead.Length);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x02,0x14,0x00,0x00,cnt[0],cnt[1]};
-            Array.Copy(buff1, 0, sendbuffer, PacketHead.Length, buff1.Length);
+            packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
             {
                 byte[] addr = GetPointBytes(point[i]);
                 byte[] rval = new byte[typeSize];
                 Buffer.BlockCopy(val, i * typeSize, rval, 0, typeSize);
                 byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType };
-                Array.Copy(buff2, 0, sendbuffer, buff1.Length + PacketHead.Length + i * (buff2.Length + rval.Length), buff2.Length);
-                Array.Copy(rval, 0, sendbuffer, buff1.Length + PacketHead.Length + i * (buff2.Length + rval.Length) + buff2.Length, rval.Length);
+                packet.AddRange(buff2);
+                packet.AddRange(rval);
             }
-            SendBuffer(sendbuffer);
+            SendBuffer(packet.ToArray());
         }
 
         public override ushort[] ReadBuffer(int address, byte count)
         {
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             byte[] addr = GetBytes(address, 4);
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x13,0x06,0x00,0x00,
                 addr[0],addr[1],addr[2],addr[3],
                 cnt[0],cnt[1]};
-            sendbuffer = Concat(PacketHead, sendbuffer);
-            byte[] recvbuffer = SendBuffer(sendbuffer);
+            packet.AddRange(buff1);
+            byte[] recvbuffer = SendBuffer(packet.ToArray());
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen / 2;
             ushort[] ret = new ushort[retLen];
@@ -307,36 +311,38 @@ namespace System.Net.Melsec
         {
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             byte[] addr = GetBytes(address, 4);
             ushort count = (ushort)val.Length;
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[19 + PacketHead.Length + count * 2];
-            byte[] len = GetRequestDataLength(sendbuffer.Length - ErrorCodePosition);
+            byte[] len = GetRequestDataLength(19 + PacketHead.Length + count * 2 - ErrorCodePosition);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x13,0x16,0x00,0x00,addr[0],addr[1],addr[2],addr[3],cnt[0],cnt[1]};
-            buff1 = Concat(PacketHead, buff1);
-            Array.Copy(buff1, sendbuffer, buff1.Length);
+            packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
             {
                 byte[] wval = BitConverter.GetBytes(val[i]);
                 byte[] buff2 = new byte[] { wval[0], wval[1] };
-                Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
+                packet.AddRange(wval);
             }
-            SendBuffer(sendbuffer);
+            SendBuffer(packet.ToArray());
         }
 
         public override byte[] ReadIntelliBuffer(ushort module, int headAddress, int address, byte count)
         {
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             byte[] mod = GetBytes(module, 2);
             byte[] addr = GetBytes(headAddress + address * 2, 4);
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0E,0x00,0x10,0x00,
+            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0E,0x00,0x10,0x00,
                 0x01,0x06,0x00,0x00,
                 addr[0],addr[1],addr[2],addr[3],
                 cnt[0],cnt[1],
                 mod[0],mod[1]};
-            sendbuffer = Concat(PacketHead, sendbuffer);
-            byte[] recvbuffer = SendBuffer(sendbuffer);
+            packet.AddRange(buff1);
+            byte[] recvbuffer = SendBuffer(packet.ToArray());
             int dataLen = recvbuffer.Length - ReturnValuePosition;
             int retLen = dataLen;
             byte[] ret = new byte[retLen];
@@ -348,18 +354,18 @@ namespace System.Net.Melsec
         {
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             byte[] mod = GetBytes(module, 2);
             byte[] addr = GetBytes(headAddress + address * 2, 4);
             ushort count = (ushort)val.Length;
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[21 + PacketHead.Length + val.Length];
-            byte[] len = GetRequestDataLength(sendbuffer.Length - ErrorCodePosition);
+            byte[] len = GetRequestDataLength(21 + PacketHead.Length + val.Length - ErrorCodePosition);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x01,0x16,0x00,0x00,addr[0],addr[1],addr[2],addr[3],cnt[0],cnt[1],mod[0],mod[1]};
-            buff1 = Concat(PacketHead, buff1);
-            Array.Copy(buff1, sendbuffer, buff1.Length);
-            Array.Copy(val, 0, sendbuffer, buff1.Length, val.Length);
-            SendBuffer(sendbuffer);
+            packet.AddRange(buff1);
+            packet.AddRange(val);
+            SendBuffer(packet.ToArray());
         }
 
         public override string ReadCPUModelName()
@@ -541,22 +547,22 @@ namespace System.Net.Melsec
                 {
                     throw new Exception(Globals.ODD_SIZE_ARRAY);
                 }
+                List<byte> packet = new List<byte>();
+                packet.AddRange(PacketHead);
                 byte[] addr = GetPointBytes(point);
                 byte[] cnt = GetPointCount(count);
-                byte[] sendbuffer = new byte[19 + PacketHead.Length + count / 2];
-                byte[] len = GetRequestDataLength(sendbuffer.Length - ErrorCodePosition);
+                byte[] len = GetRequestDataLength(19 + PacketHead.Length + count / 2 - ErrorCodePosition);
                 byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                                                0x01,0x14,0x01,0x00,addr[0],addr[1],addr[2],(byte)DeviceType, cnt[0],cnt[1]};
-                buff1 = Concat(PacketHead, buff1);
-                Array.Copy(buff1, sendbuffer, buff1.Length);
+                packet.AddRange(buff1);
                 for (int i = 0, j = 0; i < count; i += 2, ++j)
                 {
                     byte[] buff2 = new byte[1];
                     if (state[i]) buff2[0] |= 0x10;
                     if (state[i + 1]) buff2[0] |= 0x01;
-                    Array.Copy(buff2, 0, sendbuffer, buff1.Length + j * buff2.Length, buff2.Length);
+                    packet.AddRange(buff2);
                 }
-                SendBuffer(sendbuffer);
+                SendBuffer(packet.ToArray());
             }
         }
 
@@ -566,22 +572,22 @@ namespace System.Net.Melsec
                 throw new Exception(Globals.SIZE_MISMATCH);
             if (state.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
+            List<byte> packet = new List<byte>();
+            packet.AddRange(PacketHead);
             ushort count = (ushort)point.Length;
-            byte[] sendbuffer = new byte[14 + PacketHead.Length + count * 5];
-            byte[] len = GetRequestDataLength(sendbuffer.Length - ErrorCodePosition);
+            byte[] len = GetRequestDataLength(14 + PacketHead.Length + count * 5 - ErrorCodePosition);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x02,0x14,0x01,0x00,(byte)count};
-            buff1 = Concat(PacketHead, buff1);
-            Array.Copy(buff1, sendbuffer, buff1.Length);
+            packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
             {
                 byte[] addr = GetPointBytes(point[i]);
                 byte[] bval = new byte[1];
                 if (state[i]) bval[0] = 1;
                 byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType, bval[0] };
-                Array.Copy(buff2, 0, sendbuffer, buff1.Length + i * buff2.Length, buff2.Length);
+                packet.AddRange(buff2);
             }
-            SendBuffer(sendbuffer);
+            SendBuffer(packet.ToArray());
         }
 
         public void ErrLedOff()
