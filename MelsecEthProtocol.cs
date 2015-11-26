@@ -240,7 +240,6 @@ namespace System.Net.Melsec
             Array.Copy(PacketHead, sendbuffer, PacketHead.Length);
             byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x03,0x04,0x00,0x00,cnt[0],cnt[1]};
-            packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
             {
                 byte[] addr = GetPointBytes((ushort)(point[i]));
