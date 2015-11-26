@@ -174,7 +174,7 @@ namespace System.Net.Melsec
             Dispose(false);
         }
 
-        private int CheckTypeSize<T>(T type)
+        private int CheckTypeSize<T>()
         {
             int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
             if (typeSize < 2 || typeSize > 4)
@@ -184,7 +184,7 @@ namespace System.Net.Melsec
 
         public override T[] BatchReadWord<T>(ushort point, MelsecDeviceType DeviceType, ushort count)
         {
-            int typeSize = CheckTypeSize(typeof(T));
+            int typeSize = CheckTypeSize<T>();
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count * typeSize / 2);
             byte[] sendbuffer = new byte[19 + PacketHead.Length];
@@ -205,7 +205,7 @@ namespace System.Net.Melsec
 
         public override void BatchWriteWord<T>(ushort point, T[] val, MelsecDeviceType DeviceType)
         {
-            int typeSize = CheckTypeSize(typeof(T));
+            int typeSize = CheckTypeSize<T>();
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
             byte[] addr = GetPointBytes(point);
@@ -224,7 +224,7 @@ namespace System.Net.Melsec
 
         public override T[] RandomReadWord<T>(ushort[] point, MelsecDeviceType DeviceType)
         {
-            int typeSize = CheckTypeSize(typeof(T));
+            int typeSize = CheckTypeSize<T>();
             if (point.Length == 0)
                 throw new Exception(Globals.NO_DATA_READ);
             ushort count = (ushort)(point.Length);
@@ -256,7 +256,7 @@ namespace System.Net.Melsec
 
         public override void RandomWriteWord<T>(ushort[] point, T[] val, MelsecDeviceType DeviceType)
         {
-            int typeSize = CheckTypeSize(typeof(T));
+            int typeSize = CheckTypeSize<T>();
             if (point.Length != val.Length)
                 throw new Exception(Globals.SIZE_MISMATCH);
             if (val.Length == 0)
