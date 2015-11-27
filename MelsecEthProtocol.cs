@@ -175,10 +175,10 @@ namespace System.Net.Melsec
             Dispose(false);
         }
 
-        private int CheckTypeSize<T>()
+        private int CheckTypeSize<T>(byte min = 2, byte max = 4)
         {
             int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
-            if (typeSize < 2 || typeSize > 4)
+            if (typeSize < min || typeSize > max)
                 throw new Exception(Globals.WRONG_TYPE_SIZE);
             return typeSize;
         }
@@ -331,7 +331,7 @@ namespace System.Net.Melsec
         public override T[] ReadIntelliBuffer<T>(ushort module, int headAddress, int address, byte count)
         {
             List<byte> packet = new List<byte>();
-            int typeSize = CheckTypeSize<T>();
+            int typeSize = CheckTypeSize<T>(min:1);
             packet.AddRange(PacketHead);
             byte[] mod = GetBytes(module, 2);
             byte[] addr = GetBytes(headAddress + address * 2, 4);
@@ -354,7 +354,7 @@ namespace System.Net.Melsec
         {
             if (val.Length == 0)
                 throw new Exception(Globals.NO_DATA_WRITE);
-            int typeSize = CheckTypeSize<T>();
+            int typeSize = CheckTypeSize<T>(min:1);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             byte[] mod = GetBytes(module, 2);
