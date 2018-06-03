@@ -1,24 +1,11 @@
-using System;
-
 namespace System.Net.Melsec
 {
     public abstract class MelsecProtocol
     {
-        private ushort lastError = 0;
         private int receiveTimeout = 1000;
         private int sendTimeout = 1000;
 
-        public ushort LastError
-        {
-            get
-            {
-                return lastError;
-            }
-            protected set
-            {
-                lastError = value;
-            }
-        }
+        public ushort LastError { get; protected set; }
 
         public int ReceiveTimeout
         {
@@ -30,7 +17,7 @@ namespace System.Net.Melsec
             {
                 if (value > 0)
                     receiveTimeout = value;
-                else throw new Exception(Globals.LESS_ZERO_TIMEOUT);
+                else throw new Exception(Constants.LESS_ZERO_TIMEOUT);
             }
         }
 
@@ -44,7 +31,7 @@ namespace System.Net.Melsec
             {
                 if (value > 0)
                     sendTimeout = value;
-                else throw new Exception(Globals.LESS_ZERO_TIMEOUT);
+                else throw new Exception(Constants.LESS_ZERO_TIMEOUT);
             }
         }
 

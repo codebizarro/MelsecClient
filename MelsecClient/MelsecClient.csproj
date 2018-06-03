@@ -40,22 +40,31 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Globals.cs" />
-    <Compile Include="IChannel.cs" />
+    <Compile Include="Enum\MelsecDeviceType.cs" />
+    <Compile Include="Enum\DestinationCpu.cs" />
+    <Compile Include="Enum\CpuStatus.cs" />
+    <Compile Include="Enum\SwitchStatus.cs" />
+    <Compile Include="Enum\StopPauseCause.cs" />
+    <Compile Include="Enum\ProtocolType.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Transport\Interface\IChannel.cs" />
     <Compile Include="MelsecComClient.cs" />
     <Compile Include="MelsecEthClient.cs" />
-    <Compile Include="MelsecGlobals.cs" />
-    <Compile Include="Melsec3EProtocol.cs" />
-    <Compile Include="Melsec4EProtocol.cs" />
+    <Compile Include="Enum\ClearMode.cs" />
+    <Compile Include="Protocol\Melsec3EProtocol.cs" />
+    <Compile Include="Protocol\Melsec4EProtocol.cs" />
     <Compile Include="MelsecClient.cs" />
-    <Compile Include="MelsecComProtocol.cs" />
-    <Compile Include="MelsecEthProtocol.cs" />
-    <Compile Include="MelsecProtocol.cs" />
+    <Compile Include="Protocol\MelsecComProtocol.cs" />
+    <Compile Include="Protocol\MelsecEthProtocol.cs" />
+    <Compile Include="Protocol\MelsecProtocol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transport\TcpChannel.cs" />
+    <Compile Include="Transport\UdpChannel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MelsecClientDiagram.cd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

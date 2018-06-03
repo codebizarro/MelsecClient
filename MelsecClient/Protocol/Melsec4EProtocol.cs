@@ -4,14 +4,13 @@ namespace System.Net.Melsec
 {
     public sealed class Melsec4EProtocol : MelsecEthProtocol
     {
-        private const int ERROR_CODE_POSITION = 13;
-        private const int MIN_RESPONSE_LENGTH = 14;
-        private const int RETURN_VALUE_POSITION = 15;
-        private const byte RETURN_PACKET_HEADER = 0xD4;
-        private const byte DATA_LENGTH_POSITION = 11;
-
         internal Melsec4EProtocol(string ip, ushort port)
-            : base(ip, port, ERROR_CODE_POSITION, MIN_RESPONSE_LENGTH, RETURN_VALUE_POSITION, RETURN_PACKET_HEADER, DATA_LENGTH_POSITION)
+            : base(ip, port,
+                  errorCodePosition: 13,
+                  minResponseLength: 14,
+                  returnValuePosition: 15,
+                  returnPacketHeader: 0xD4,
+                  dataLengthPosition: 11)
         {
             Random rnd = new Random();
             serialNo = (ushort)rnd.Next(ushort.MinValue, ushort.MaxValue);
