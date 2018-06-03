@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MelsecClient", "MelsecClient\MelsecClient.csproj", "{E363F5C8-A293-47F5-A835-DF877EDED234}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{ECD0662B-C18B-43A4-AB12-2DECC4BF881A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{E363F5C8-A293-47F5-A835-DF877EDED234}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E363F5C8-A293-47F5-A835-DF877EDED234}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E363F5C8-A293-47F5-A835-DF877EDED234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECD0662B-C18B-43A4-AB12-2DECC4BF881A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECD0662B-C18B-43A4-AB12-2DECC4BF881A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECD0662B-C18B-43A4-AB12-2DECC4BF881A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECD0662B-C18B-43A4-AB12-2DECC4BF881A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
