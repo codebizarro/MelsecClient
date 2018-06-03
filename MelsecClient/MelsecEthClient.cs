@@ -1,5 +1,3 @@
-using System;
-
 namespace System.Net.Melsec
 {
     public sealed class MelsecEthClient : MelsecClient

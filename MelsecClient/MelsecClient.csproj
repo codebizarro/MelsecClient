@@ -40,26 +40,26 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\MelsecDeviceType.cs" />
-    <Compile Include="Enums\DestinationCpu.cs" />
-    <Compile Include="Enums\CpuStatus.cs" />
-    <Compile Include="Enums\SwitchStatus.cs" />
-    <Compile Include="Enums\StopPauseCause.cs" />
-    <Compile Include="Enums\ProtocolType.cs" />
+    <Compile Include="Enum\MelsecDeviceType.cs" />
+    <Compile Include="Enum\DestinationCpu.cs" />
+    <Compile Include="Enum\CpuStatus.cs" />
+    <Compile Include="Enum\SwitchStatus.cs" />
+    <Compile Include="Enum\StopPauseCause.cs" />
+    <Compile Include="Enum\ProtocolType.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Interfaces\IChannel.cs" />
+    <Compile Include="Transport\Interface\IChannel.cs" />
     <Compile Include="MelsecComClient.cs" />
     <Compile Include="MelsecEthClient.cs" />
-    <Compile Include="Enums\ClearMode.cs" />
-    <Compile Include="Melsec3EProtocol.cs" />
-    <Compile Include="Melsec4EProtocol.cs" />
+    <Compile Include="Enum\ClearMode.cs" />
+    <Compile Include="Protocol\Melsec3EProtocol.cs" />
+    <Compile Include="Protocol\Melsec4EProtocol.cs" />
     <Compile Include="MelsecClient.cs" />
-    <Compile Include="MelsecComProtocol.cs" />
-    <Compile Include="MelsecEthProtocol.cs" />
-    <Compile Include="MelsecProtocol.cs" />
+    <Compile Include="Protocol\MelsecComProtocol.cs" />
+    <Compile Include="Protocol\MelsecEthProtocol.cs" />
+    <Compile Include="Protocol\MelsecProtocol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TcpChannel.cs" />
-    <Compile Include="UdpChannel.cs" />
+    <Compile Include="Transport\TcpChannel.cs" />
+    <Compile Include="Transport\UdpChannel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MelsecClientDiagram.cd" />

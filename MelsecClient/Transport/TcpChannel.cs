@@ -2,22 +2,36 @@
 
 namespace System.Net.Melsec
 {
-    class UdpChannel : IChannel
+    class TcpChannel : IChannel
     {
-        private UdpClient Client;
-        private IPEndPoint EndPoint;
+        private TcpClient Client;
+        private NetworkStream stream;
 
-        public UdpChannel(IPEndPoint endpoint)
+        public TcpChannel(IPEndPoint endpoint)
         {
-            EndPoint = endpoint;
-            Client = new UdpClient();
+            Client = new TcpClient();
             Client.Connect(endpoint);
+            stream = Client.GetStream();
+            if (!stream.CanWrite) throw new Exception("Stream don't ready to write");
         }
 
         public byte[] Execute(byte[] buffer)
         {
-            Client.Send(buffer, buffer.Length);
-            return Client.Receive(ref EndPoint);
+            stream.Write(buffer, 0, buffer.Length);
+            System.Collections.Generic.List<byte> lst = new Collections.Generic.List<byte>();
+            if (stream.CanRead)
+            {
+                byte[] buff = new byte[1024];
+                int n = 0;
+                do
+                {
+                    n = stream.Read(buff, 0, buff.Length);
+                    for (int i = 0; i < n; ++i)
+                        lst.Add(buff[i]);
+                }
+                while (stream.DataAvailable);
+            }
+            return lst.ToArray();
         }
 
         public int SendTimeout
@@ -44,7 +58,7 @@ namespace System.Net.Melsec
             }
         }
 
-        private bool disposed = false;
+        private bool disposed;
 
         public void Dispose()
         {
@@ -58,6 +72,11 @@ namespace System.Net.Melsec
             {
                 if (disposing)
                 {
+                    if (stream != null)
+                    {
+                        stream.Close();
+                        stream = null;
+                    }
                     if (Client != null)
                     {
                         Client.Close();
@@ -68,7 +87,7 @@ namespace System.Net.Melsec
             }
         }
 
-        ~UdpChannel()
+        ~TcpChannel()
         {
             Dispose(false);
         }
