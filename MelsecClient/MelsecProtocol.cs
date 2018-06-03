@@ -30,7 +30,7 @@ namespace System.Net.Melsec
             {
                 if (value > 0)
                     receiveTimeout = value;
-                else throw new Exception(Globals.LESS_ZERO_TIMEOUT);
+                else throw new Exception(Constants.LESS_ZERO_TIMEOUT);
             }
         }
 
@@ -44,7 +44,7 @@ namespace System.Net.Melsec
             {
                 if (value > 0)
                     sendTimeout = value;
-                else throw new Exception(Globals.LESS_ZERO_TIMEOUT);
+                else throw new Exception(Constants.LESS_ZERO_TIMEOUT);
             }
         }
 

@@ -179,7 +179,7 @@ namespace System.Net.Melsec
         {
             int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
             if (typeSize < min || typeSize > max)
-                throw new Exception(Globals.WRONG_TYPE_SIZE);
+                throw new Exception(Constants.WRONG_TYPE_SIZE);
             return typeSize;
         }
 
@@ -208,7 +208,7 @@ namespace System.Net.Melsec
         {
             int typeSize = CheckTypeSize<T>();
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             byte[] addr = GetPointBytes(point);
@@ -228,7 +228,7 @@ namespace System.Net.Melsec
         {
             int typeSize = CheckTypeSize<T>();
             if (point.Length == 0)
-                throw new Exception(Globals.NO_DATA_READ);
+                throw new Exception(Constants.NO_DATA_READ);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             ushort count = (ushort)(point.Length);
@@ -260,9 +260,9 @@ namespace System.Net.Melsec
         {
             int typeSize = CheckTypeSize<T>();
             if (point.Length != val.Length)
-                throw new Exception(Globals.SIZE_MISMATCH);
+                throw new Exception(Constants.SIZE_MISMATCH);
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             ushort count = (ushort)point.Length;
@@ -311,7 +311,7 @@ namespace System.Net.Melsec
         public override void WriteBuffer<T>(int address, T[] val)
         {
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             int typeSize = CheckTypeSize<T>();
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
@@ -353,7 +353,7 @@ namespace System.Net.Melsec
         public override void WriteIntelliBuffer<T>(ushort module, int headAddress, int address, T[] val)
         {
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             int typeSize = CheckTypeSize<T>(min:1);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
@@ -509,7 +509,7 @@ namespace System.Net.Melsec
         public override bool[] ReadByte(ushort[] point, MelsecDeviceType DeviceType)
         {
             if (point.Length == 0)
-                throw new Exception(Globals.NO_DATA_READ);
+                throw new Exception(Constants.NO_DATA_READ);
             ushort[] us = ReadWord(point, DeviceType);
             bool[] ret = new bool[us.Length];
             for (int i = 0; i < ret.Length; ++i)
@@ -538,7 +538,7 @@ namespace System.Net.Melsec
         public override void WriteByte(ushort point, bool[] state, MelsecDeviceType DeviceType)
         {
             if (state.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             if (state.Length == 1)
             {
                 WriteByte(point, state[0], DeviceType);
@@ -548,7 +548,7 @@ namespace System.Net.Melsec
                 ushort count = (ushort)state.Length;
                 if ((count & 1) != 0)
                 {
-                    throw new Exception(Globals.ODD_SIZE_ARRAY);
+                    throw new Exception(Constants.ODD_SIZE_ARRAY);
                 }
                 List<byte> packet = new List<byte>();
                 packet.AddRange(PacketHead);
@@ -572,9 +572,9 @@ namespace System.Net.Melsec
         public override void WriteByte(ushort[] point, bool[] state, MelsecDeviceType DeviceType)
         {
             if (point.Length != state.Length)
-                throw new Exception(Globals.SIZE_MISMATCH);
+                throw new Exception(Constants.SIZE_MISMATCH);
             if (state.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             ushort count = (ushort)point.Length;
