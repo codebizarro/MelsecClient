@@ -1,7 +1,3 @@
-using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Collections.Generic;
 
 namespace System.Net.Melsec
@@ -14,7 +10,7 @@ namespace System.Net.Melsec
         protected readonly int ReturnValuePosition;
         private readonly byte ReturnPacketHeader;
         private readonly byte DataLengthPosition;
-        protected byte NetNo = 0x00;
+        protected byte NetNo;
         protected byte PcNo = 0xFF;
         protected byte destinationCpu = (byte)DestinationCpu.LocalStation;
         private IChannel Channel;
@@ -149,7 +145,7 @@ namespace System.Net.Melsec
                 EndPoint.Address, EndPoint.Port, NetNo, PcNo, DestinationCpu);
         }
 
-        private bool disposed = false;
+        private bool disposed;
 
         public void Dispose()
         {
@@ -179,7 +175,7 @@ namespace System.Net.Melsec
         {
             int typeSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
             if (typeSize < min || typeSize > max)
-                throw new Exception(Globals.WRONG_TYPE_SIZE);
+                throw new Exception(Constants.WRONG_TYPE_SIZE);
             return typeSize;
         }
 
@@ -190,7 +186,7 @@ namespace System.Net.Melsec
             packet.AddRange(PacketHead);
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count * typeSize / 2);
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x01,0x04,0x00,0x00,
                 addr[0],addr[1],addr[2],
                 (byte)DeviceType,
@@ -208,14 +204,14 @@ namespace System.Net.Melsec
         {
             int typeSize = CheckTypeSize<T>();
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             byte[] addr = GetPointBytes(point);
             ushort count = (ushort)(val.Length * typeSize / 2);
             byte[] cnt = GetPointCount(count);
             byte[] len = GetRequestDataLength(19 + PacketHead.Length + count * 2 - ErrorCodePosition);
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x01,0x14,0x00,0x00,addr[0],addr[1],addr[2],(byte)DeviceType,cnt[0],cnt[1]};
             packet.AddRange(buff1);
             byte[] buff2 = new byte[count * 2];
@@ -228,7 +224,7 @@ namespace System.Net.Melsec
         {
             int typeSize = CheckTypeSize<T>();
             if (point.Length == 0)
-                throw new Exception(Globals.NO_DATA_READ);
+                throw new Exception(Constants.NO_DATA_READ);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             ushort count = (ushort)(point.Length);
@@ -239,13 +235,13 @@ namespace System.Net.Melsec
                 cnt[0] = 0;
                 cnt[1] = (byte)count;
             }
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x03,0x04,0x00,0x00,cnt[0],cnt[1]};
             packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
             {
                 byte[] addr = GetPointBytes((ushort)(point[i]));
-                byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType };
+                byte[] buff2 = { addr[0], addr[1], addr[2], (byte)DeviceType };
                 packet.AddRange(buff2);
             }
             byte[] recvbuffer = SendBuffer(packet.ToArray());
@@ -260,9 +256,9 @@ namespace System.Net.Melsec
         {
             int typeSize = CheckTypeSize<T>();
             if (point.Length != val.Length)
-                throw new Exception(Globals.SIZE_MISMATCH);
+                throw new Exception(Constants.SIZE_MISMATCH);
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             ushort count = (ushort)point.Length;
@@ -273,7 +269,7 @@ namespace System.Net.Melsec
                 cnt[0] = 0;
                 cnt[1] = (byte)count;
             }
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x02,0x14,0x00,0x00,cnt[0],cnt[1]};
             packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
@@ -281,7 +277,7 @@ namespace System.Net.Melsec
                 byte[] addr = GetPointBytes(point[i]);
                 byte[] rval = new byte[typeSize];
                 Buffer.BlockCopy(val, i * typeSize, rval, 0, typeSize);
-                byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType };
+                byte[] buff2 = { addr[0], addr[1], addr[2], (byte)DeviceType };
                 packet.AddRange(buff2);
                 packet.AddRange(rval);
             }
@@ -295,7 +291,7 @@ namespace System.Net.Melsec
             packet.AddRange(PacketHead);
             byte[] addr = GetBytes(address, 4);
             byte[] cnt = GetPointCount(count * typeSize / 2);
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x13,0x06,0x00,0x00,
                 addr[0],addr[1],addr[2],addr[3],
                 cnt[0],cnt[1]};
@@ -311,7 +307,7 @@ namespace System.Net.Melsec
         public override void WriteBuffer<T>(int address, T[] val)
         {
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             int typeSize = CheckTypeSize<T>();
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
@@ -319,7 +315,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)(val.Length * typeSize / 2);
             byte[] cnt = GetPointCount(count);
             byte[] len = GetRequestDataLength(19 + PacketHead.Length + count * 2 - ErrorCodePosition);
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x13,0x16,0x00,0x00,addr[0],addr[1],addr[2],addr[3],cnt[0],cnt[1]};
             packet.AddRange(buff1);
             byte[] buff2 = new byte[count * 2];
@@ -331,12 +327,12 @@ namespace System.Net.Melsec
         public override T[] ReadIntelliBuffer<T>(ushort module, int headAddress, int address, byte count)
         {
             List<byte> packet = new List<byte>();
-            int typeSize = CheckTypeSize<T>(min:1);
+            int typeSize = CheckTypeSize<T>(min: 1);
             packet.AddRange(PacketHead);
             byte[] mod = GetBytes(module, 2);
             byte[] addr = GetBytes(headAddress + address * 2, 4);
             byte[] cnt = GetPointCount(count * typeSize);
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0E,0x00,0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,0x0E,0x00,0x10,0x00,
                 0x01,0x06,0x00,0x00,
                 addr[0],addr[1],addr[2],addr[3],
                 cnt[0],cnt[1],
@@ -353,8 +349,8 @@ namespace System.Net.Melsec
         public override void WriteIntelliBuffer<T>(ushort module, int headAddress, int address, T[] val)
         {
             if (val.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
-            int typeSize = CheckTypeSize<T>(min:1);
+                throw new Exception(Constants.NO_DATA_WRITE);
+            int typeSize = CheckTypeSize<T>(min: 1);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             byte[] mod = GetBytes(module, 2);
@@ -362,7 +358,7 @@ namespace System.Net.Melsec
             ushort count = (ushort)(val.Length * typeSize);
             byte[] cnt = GetPointCount(count);
             byte[] len = GetRequestDataLength(21 + PacketHead.Length + count - ErrorCodePosition);
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x01,0x16,0x00,0x00,addr[0],addr[1],addr[2],addr[3],cnt[0],cnt[1],mod[0],mod[1]};
             packet.AddRange(buff1);
             byte[] buff2 = new byte[count];
@@ -373,7 +369,7 @@ namespace System.Net.Melsec
 
         public override string ReadCPUModelName()
         {
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x06,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x06,0x00,0x10,0x00,
                 0x01,0x01,
                 0x00,0x00};
             sendbuffer = Concat(PacketHead, sendbuffer);
@@ -484,7 +480,7 @@ namespace System.Net.Melsec
         {
             byte[] addr = GetPointBytes(point);
             byte[] cnt = GetPointCount(count);
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x0C,0x00,0x10,0x00,
                 0x01,0x04,0x01,0x00,
                 addr[0],addr[1],addr[2],
                 (byte)DeviceType,
@@ -509,7 +505,7 @@ namespace System.Net.Melsec
         public override bool[] ReadByte(ushort[] point, MelsecDeviceType DeviceType)
         {
             if (point.Length == 0)
-                throw new Exception(Globals.NO_DATA_READ);
+                throw new Exception(Constants.NO_DATA_READ);
             ushort[] us = ReadWord(point, DeviceType);
             bool[] ret = new bool[us.Length];
             for (int i = 0; i < ret.Length; ++i)
@@ -525,7 +521,7 @@ namespace System.Net.Melsec
             byte On;
             if (state) On = 0x10;
             else On = 0x00;
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0D,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x0D,0x00,0x10,0x00,
                 0x01,0x14,0x01,0x00,
                 addr[0],addr[1],addr[2],
                 (byte)DeviceType,
@@ -538,7 +534,7 @@ namespace System.Net.Melsec
         public override void WriteByte(ushort point, bool[] state, MelsecDeviceType DeviceType)
         {
             if (state.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             if (state.Length == 1)
             {
                 WriteByte(point, state[0], DeviceType);
@@ -548,14 +544,14 @@ namespace System.Net.Melsec
                 ushort count = (ushort)state.Length;
                 if ((count & 1) != 0)
                 {
-                    throw new Exception(Globals.ODD_SIZE_ARRAY);
+                    throw new Exception(Constants.ODD_SIZE_ARRAY);
                 }
                 List<byte> packet = new List<byte>();
                 packet.AddRange(PacketHead);
                 byte[] addr = GetPointBytes(point);
                 byte[] cnt = GetPointCount(count);
                 byte[] len = GetRequestDataLength(19 + PacketHead.Length + count / 2 - ErrorCodePosition);
-                byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+                byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                                                0x01,0x14,0x01,0x00,addr[0],addr[1],addr[2],(byte)DeviceType, cnt[0],cnt[1]};
                 packet.AddRange(buff1);
                 for (int i = 0, j = 0; i < count; i += 2, ++j)
@@ -572,14 +568,14 @@ namespace System.Net.Melsec
         public override void WriteByte(ushort[] point, bool[] state, MelsecDeviceType DeviceType)
         {
             if (point.Length != state.Length)
-                throw new Exception(Globals.SIZE_MISMATCH);
+                throw new Exception(Constants.SIZE_MISMATCH);
             if (state.Length == 0)
-                throw new Exception(Globals.NO_DATA_WRITE);
+                throw new Exception(Constants.NO_DATA_WRITE);
             List<byte> packet = new List<byte>();
             packet.AddRange(PacketHead);
             ushort count = (ushort)point.Length;
             byte[] len = GetRequestDataLength(14 + PacketHead.Length + count * 5 - ErrorCodePosition);
-            byte[] buff1 = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
+            byte[] buff1 = {NetNo,PcNo,destinationCpu,0x03,0x00,len[0],len[1],0x10,0x00,
                 0x02,0x14,0x01,0x00,(byte)count};
             packet.AddRange(buff1);
             for (int i = 0; i < count; ++i)
@@ -587,7 +583,7 @@ namespace System.Net.Melsec
                 byte[] addr = GetPointBytes(point[i]);
                 byte[] bval = new byte[1];
                 if (state[i]) bval[0] = 1;
-                byte[] buff2 = new byte[] { addr[0], addr[1], addr[2], (byte)DeviceType, bval[0] };
+                byte[] buff2 = { addr[0], addr[1], addr[2], (byte)DeviceType, bval[0] };
                 packet.AddRange(buff2);
             }
             SendBuffer(packet.ToArray());
@@ -595,7 +591,7 @@ namespace System.Net.Melsec
 
         public void ErrLedOff()
         {
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x06,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x06,0x00,0x10,0x00,
                 0x17,0x16,
                 0x00,0x00};
             sendbuffer = Concat(PacketHead, sendbuffer);
@@ -605,7 +601,7 @@ namespace System.Net.Melsec
         public override void Run(bool forced, ClearMode mode)
         {
             byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x0A,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x0A,0x00,0x10,0x00,
                 0x01,0x10,
                 0x00,0x00,
                 frcd,0x00,
@@ -617,7 +613,7 @@ namespace System.Net.Melsec
         public override void Pause(bool forced)
         {
             byte frcd = (forced) ? frcd = 0x03 : frcd = 0x01;
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
                 0x03,0x10,
                 0x00,0x00,
                 frcd,0x00};
@@ -627,7 +623,7 @@ namespace System.Net.Melsec
 
         public override void Stop()
         {
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
                 0x02,0x10,
                 0x00,0x00,
                 0x01,0x00};
@@ -637,7 +633,7 @@ namespace System.Net.Melsec
 
         public override void Reset()
         {
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+            byte[] sendbuffer = {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
                 0x06,0x10,
                 0x00,0x00,
                 0x01,0x00};
@@ -651,7 +647,7 @@ namespace System.Net.Melsec
 
         public override void LatchClear()
         {
-            byte[] sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
+            var sendbuffer = new byte[] {NetNo,PcNo,destinationCpu,0x03,0x00,0x08,0x00,0x10,0x00,
                 0x05,0x10,
                 0x00,0x00,
                 0x01,0x00};
