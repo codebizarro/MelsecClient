@@ -8,8 +8,8 @@ namespace TestClient
 {
     public class TestCommon : IDisposable
     {
-        private ushort dummyReg = 3500;
-        private ushort dummyMer = 3500;
+        private ushort dummyReg = Configuration.Offset;
+        private ushort dummyMer = Configuration.Offset;
         private ushort[] arrayReg;
         private ushort[] arrayReg2;
         private ushort valShort;
@@ -75,6 +75,8 @@ namespace TestClient
         {
             //#warning Метод отключен
             //            return;
+            Assert.IsTrue(Configuration.DoWrite, "The Writing test are disabled");
+
             DateTime testDateTime = new DateTime(1984, 3, 8, 16, 20, 33);
             Assert.IsTrue(mc.SetQTime(testDateTime));
             DateTime dt = mc.GetQTime();
@@ -190,7 +192,7 @@ namespace TestClient
             //var arraysAreEqual = Enumerable.SequenceEqual(a1, a2);
         }
 
-        private bool disposed = false;
+        private bool disposed;
 
         public void Dispose()
         {

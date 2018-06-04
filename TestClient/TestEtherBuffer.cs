@@ -8,7 +8,7 @@ namespace TestClient
     public class TestEtherBuffer : TestCommon
     {
         public TestEtherBuffer()
-            : base(ProtocolType.Melsec3EProtocol, "192.168.22.169", 5001)
+            : base(ProtocolType.Melsec3EProtocol, Configuration.Address, 5001)
         {
 
             //mc.Protocol.DestinationCpu = DestinationCpu.LocalStation;
@@ -38,6 +38,8 @@ namespace TestClient
         [TestMethod]
         public void ReadWriteEtherBuffer()
         {
+            Assert.IsTrue(Configuration.DoWrite, "The Writing test are disabled");
+
             mc.Protocol.WriteBuffer<float>(dummyHeadAddress, new float[] { 3.1415f, 0.1111f });
             float[] f = mc.Protocol.ReadBuffer<float>(dummyHeadAddress, 2);
             mc.Protocol.WriteBuffer<float>(dummyHeadAddress, new float[] { 0, 0 });

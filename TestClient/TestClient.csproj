@@ -38,6 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -55,6 +56,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="TestEtherBuffer.cs" />
     <Compile Include="TestIntelliBuffer.cs" />
     <Compile Include="TestClient.cs" />
@@ -69,6 +71,9 @@
       <Project>{e363f5c8-a293-47f5-a835-df877eded234}</Project>
       <Name>MelsecClient</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

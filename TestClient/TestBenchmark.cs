@@ -9,7 +9,7 @@ namespace TestClient
     {
 
         public TestBenchmark()
-            : base(ProtocolType.Melsec3EProtocol, "192.168.22.169", 5002)
+            : base(ProtocolType.Melsec3EProtocol, Configuration.Address, 5002)
         {
             //mc.Protocol.DestinationCpu = DestinationCpu.StandbySystem;
             mc.Protocol.UseTcp = true;
