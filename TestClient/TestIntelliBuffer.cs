@@ -9,7 +9,7 @@ namespace TestClient
     public class TestIntelliBuffer : TestCommon
     {
         public TestIntelliBuffer()
-            : base(ProtocolType.Melsec3EProtocol, "192.168.22.169", 5001)
+            : base(ProtocolType.Melsec3EProtocol, Configuration.Address, 5001)
         {
 
             //mc.Protocol.DestinationCpu = DestinationCpu.LocalStation;
@@ -33,6 +33,8 @@ namespace TestClient
         [TestMethod]
         public void ReadWriteIntelliBuffer()
         {
+            Assert.IsTrue(Configuration.DoWrite, "The Writing test are disabled");
+
             float[] buffer = mc.Protocol.ReadIntelliBuffer<float>(0, 0x10000, 0x2000, 0x2);
             mc.Protocol.WriteIntelliBuffer(0, 0x10000, dummyHeadAddress, buffer);
             buffer = mc.Protocol.ReadIntelliBuffer<float>(0, 0x10000, dummyHeadAddress, 4);

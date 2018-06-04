@@ -7,10 +7,10 @@ namespace TestClient
     public class TestClientUDP : TestCommon
     {
         public TestClientUDP()
-            : base(ProtocolType.Melsec3EProtocol, "192.168.22.169", 5001)
+            : base(ProtocolType.Melsec3EProtocol, Configuration.Address, 5001)
         {
             mc.Protocol.DestinationCpu = DestinationCpu.LocalStation;
-            plcModel = "Q02HCPU";
+            plcModel = Configuration.ExpectedModel;
             mc.Protocol.KeepConnection = true;
         }
 
@@ -97,10 +97,10 @@ namespace TestClient
     public class TestClientTCP : TestCommon
     {
         public TestClientTCP()
-            : base(ProtocolType.Melsec3EProtocol, "192.168.22.169", 5002)
+            : base(ProtocolType.Melsec3EProtocol, Configuration.Address, 5002)
         {
             mc.Protocol.DestinationCpu = DestinationCpu.LocalStation;
-            plcModel = "Q02HCPU";
+            plcModel = Configuration.ExpectedModel;
             mc.Protocol.UseTcp = true;
             mc.Protocol.KeepConnection = true;
         }

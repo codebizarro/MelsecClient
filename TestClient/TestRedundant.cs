@@ -3,11 +3,11 @@ using System.Net.Melsec;
 
 namespace TestClient
 {
-    [TestClass]
+    //[TestClass]
     public class TestRedundantUDP : TestCommon
     {
         public TestRedundantUDP()
-            : base(ProtocolType.Melsec3EProtocol, "192.168.22.62", 5001)
+            : base(ProtocolType.Melsec3EProtocol, Configuration.Address, 5001)
         {
             mc.Protocol.DestinationCpu = DestinationCpu.StandbySystem;
             plcModel = "Q25PRHCPU";
@@ -105,11 +105,11 @@ namespace TestClient
         }
     }
 
-    [TestClass]
+    //[TestClass]
     public class TestRedundantTCP : TestCommon
     {
         public TestRedundantTCP()
-            : base(ProtocolType.Melsec3EProtocol, "192.168.22.62", 5002)
+            : base(ProtocolType.Melsec3EProtocol, Configuration.Address, 5002)
         {
             mc.Protocol.DestinationCpu = DestinationCpu.StandbySystem;
             plcModel = "Q25PRHCPU";

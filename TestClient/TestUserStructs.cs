@@ -97,7 +97,7 @@ namespace TestClientStructs
         }
     }
 
-    [TestClass]
+    //[TestClass]
     public class TestUserStructs
     {
         [TestMethod]
